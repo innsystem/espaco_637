@@ -1,0 +1,201 @@
+/* Counter 1 ---------------------------------- */
+.counter-card {
+    &-wrap {
+        display: flex;
+        justify-content: space-between;
+        &.style2 {
+            .divider {
+                background-color: #666666;
+            }
+        }
+
+        &.style3 {
+            padding: 90px 103px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #24272E;
+
+            @include ml {
+                padding: 80px 30px;
+            }
+
+            @include lg {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0;
+                padding: 30px;
+
+                .divider {
+                    display: none;
+                }
+            }
+            @include xs {
+                display: block;
+            }
+
+            .divider {
+                width: 1px;
+                height: 88px;
+                background-color: $theme-color;
+            }
+        }
+
+        .divider {
+            width: 1px;
+            height: 60px;
+            background-color: #333333;
+
+            &:last-of-type {
+                display: none;
+            }
+        }
+
+        &.style2 {
+            max-width: 506px;
+
+            @include ml {
+                max-width: 100%;
+            }
+        }
+    }
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    &.style2 {
+        text-align: center;
+
+        @include lg {
+            padding: 50px;
+            border-right: 1px solid $theme-color;
+            border-bottom: 1px solid $theme-color;
+            @include sm {
+                padding: 30px;
+            }
+            @include xs {
+                border: none;
+                display: block;
+            }
+
+            &:nth-child(3) {
+                border-right-color: transparent;
+            }
+
+            &:nth-child(5) {
+                border-bottom-color: transparent;
+            }
+
+            &:nth-child(7) {
+                border-right-color: transparent;
+                border-bottom-color: transparent;
+            }
+        }
+
+        .box-number {
+            font-size: 57px;
+            line-height: 57px;
+            color: $white-color;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-top: -0.2em;
+
+            @include lg {
+                font-size: 40px;
+            }
+        }
+
+        .box-text {
+            font-family: $body-font;
+            font-weight: 500;
+            font-size: 24px;
+            @include xl {
+                font-size: 20px;
+            }
+            @include lg {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .box-number {
+        font-size: 40px;
+        line-height: 50px;
+        color: $theme-color;
+        font-weight: 500;
+        margin-bottom: 0px;
+        margin-top: -0.2em;
+    }
+
+    .box-text {
+        font-family: $title-font;
+        font-weight: 500;
+        font-size: 18px;
+    }
+
+    .media-body {
+        flex: 1;
+    }
+}
+
+@include md {
+    .counter-card {
+
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+
+        .box-number {
+            font-size: 36px;
+            margin-bottom: 0;
+        }
+    }
+}
+
+@include sm {
+    .counter-card {
+        &-wrap {
+            // flex-wrap: wrap; 
+            position: relative;
+            gap: 32px;
+
+            .divider {
+                display: none;
+            }
+        }
+
+        flex: calc(50% - 18px);
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+@include xs {
+    .counter-card {
+        &-wrap {
+            gap: 36px 20px;
+        }
+
+        flex: calc(50% - 10px);
+    }
+}
+
+@media(max-width: 480px) {
+    .counter-card {
+        justify-content: flex-start;
+        text-align: left;
+        align-items: flex-start;
+
+        &-wrap {
+            display: flex;
+            flex-direction: column;
+
+        }
+    }
+}
+
+/* Counter 2 ---------------------------------- */
+.counter-area-2 {
+    border-top: 1px solid #1C4C5A;
+    border-bottom: 1px solid #1C4C5A;
+}

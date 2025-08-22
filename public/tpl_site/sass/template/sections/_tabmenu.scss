@@ -1,0 +1,48 @@
+/* Tab Menu 1 ------------------------------------*/
+.tab-menu {
+    position: relative;
+    gap: 16px;
+
+    &.style2 {
+        .th-btn2 {
+            font-size: 18px;
+            border-radius: 48px;
+            padding: 13px 34px;
+        }
+    }
+
+    .tab-btn {
+        font-family: $body-font;
+        font-weight: 500;
+        font-size: 14px;
+        background-color: transparent; 
+        border: 1px solid #808182;
+        padding: 13px 28px;
+        color: $white-color;
+        text-transform: capitalize;
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+
+        @include lg {
+            padding: 13px 20px;
+        }
+
+        &.active,
+        &:hover {
+            border-color: $theme-color;
+            background-color: $theme-color;
+
+            &:before {
+                background-color: $theme-color;
+            }
+        }
+
+    }
+
+    .indicator {
+        display: none;
+    }
+}
+
+/* Tab Menu 2 ------------------------------------*/

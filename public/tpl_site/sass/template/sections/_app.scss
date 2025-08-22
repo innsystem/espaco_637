@@ -1,0 +1,59 @@
+/* App 1 ---------------------------------- */
+.app-title-area {
+    max-width: 1045px;
+    background: $light-color2;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 36px;
+    padding: 130px 200px 43px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    position: relative;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: -36px;
+        background: $light-color2;
+        opacity: 0.5;
+        border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        backdrop-filter: blur(10px);
+    }
+    .title-area img {
+        margin-bottom: 0;
+    }
+    .btn-wrap {
+        margin-top: 38px;
+    }
+    .sec-text {
+        margin-top: 30px;
+        @include xs {
+            font-size: 16px;
+        }
+    }
+    .sec-title {
+        max-width: 473px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    @include lg {
+        margin-left: 36px;
+        margin-right: 36px;
+        padding: 120px 120px 50px;
+    }
+    @include md {
+        border-radius: 0;
+        padding: 80px 30px 40px;
+        &:after {
+            border-radius: 0;
+        }
+    }
+    @include xs {
+        border-radius: 0;
+        padding: 60px 24px 40px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 20px;
+        &:after {
+            inset: -20px;
+        }
+    }
+}

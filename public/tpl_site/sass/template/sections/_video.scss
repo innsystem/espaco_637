@@ -1,0 +1,39 @@
+/* Video Area ---------------------------------- */
+.video-bg-shape {
+    position: absolute;
+    inset: 0;
+    background-size: auto;
+    background-position: right;
+    z-index: 1;
+}
+.video-content-wrap2 {
+    padding: 256px 0;
+    @include lg {
+        text-align: center;
+        padding: 40px 0 0;
+        .call-info {
+            display: inline-flex;
+            text-align: start;
+        }
+    }
+}
+.video-wrap2 {
+    .discount-wrapp {
+        display: inline-block;
+        .discount-tag span {
+            --rotate-letter: 7.5deg;
+        }
+    }
+    @include lg {
+        margin-top: 120px;
+    }
+}
+.video-img-box2 {
+    position: absolute;
+    bottom: 0;
+    top: 37px;
+    @include lg {
+        position: relative;
+        text-align: center;
+    }
+}

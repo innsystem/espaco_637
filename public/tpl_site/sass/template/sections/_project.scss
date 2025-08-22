@@ -1,0 +1,268 @@
+/* Project Card ---------------------------------- */
+.project-card {
+    position: relative;
+    z-index: 2;
+
+    .box {
+        &-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            left: 16px;
+            background-color: rgba($color: #fff, $alpha: 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            padding: 24px;
+            transition: 0.4s ease-in-out;
+        }
+
+        &-title {
+            margin: 0;
+        }
+
+        &-img {
+            border-radius: 24px;
+        }
+    }
+
+    .icon-btn {
+        --btn-size: 48px;
+        min-width: 48px;
+        font-size: 18px;
+        border: none;
+        background-color: $theme-color;
+        color: $white-color;
+
+        &:hover {
+            background-color: $title-color;
+        }
+    }
+
+    &:hover {
+        .box-title {
+            color: $white-color;
+        }
+
+        .box-content {
+            background-color: rgba($color: #101840, $alpha: 0.8);
+        }
+
+        .box-img {
+            img {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+/* Project Grid ---------------------------------- */
+.filter-menu {
+    justify-content: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+
+    .tab-btn {
+        display: inline-block;
+        border: none;
+        background-color: transparent;
+        border: 1px solid #808182;
+        font-weight: 500;
+        font-size: 14px;
+        color: $white-color;
+        padding: 9px 24px;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+            background-color: $theme-color;
+            border-color: $theme-color;
+        }
+
+        &.active {
+            background-color: $theme-color;
+            border-color: $theme-color;
+            color: $white-color;
+
+            &:before {
+                background-color: $theme-color;
+                border-color: $theme-color;
+            }
+        }
+    }
+
+    .indicator {
+        display: none;
+    }
+
+    &.style2 {
+        justify-content: flex-start;
+
+        .tab-btn { 
+            padding: 9px 20px;
+        }
+    }
+}
+
+.project-grid {
+    position: relative;
+    z-index: 2;
+    background-color: $white-color;
+    text-align: left;
+
+    .box {
+        &-content {
+            padding: 32px;
+
+            @include lg {
+                padding: 24px;
+            }
+
+            @include sm {
+                padding: 32px;
+            }
+
+            @include vxs {
+                padding: 24px;
+            }
+        }
+
+        &-title {
+            margin-bottom: 8px;
+        }
+    }
+
+    .th-btn2,
+    .th-btn {
+        margin-top: 31px;
+    }
+
+    .th-btn.style2 {
+        font-weight: 500;
+        color: $title-color;
+        border-color: $title-color;
+    }
+
+    &:hover {
+        .box-img {
+            img {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+
+/* Project Details ------------------------------------ */
+.project-info {
+    &-wrap {
+        background-color: $white-color;
+        padding: 40px;
+        margin-left: 36px;
+
+        @include md {
+            margin-left: 0;
+            margin-top: 40px;
+        }
+
+        @include xs {
+            padding: 30px;
+        }
+
+        .box-title {
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid $light-color;
+            position: relative;
+
+            &:after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 40px;
+                height: 1px;
+                background-color: $theme-color;
+            }
+        }
+    }
+
+    &:not(:last-of-type) {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid $light-color;
+    }
+
+    .box-label {
+        margin-top: -0.45em;
+        margin-bottom: 5px;
+    }
+
+    .box-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: -0.3em;
+    }
+}
+
+.project-listing {
+
+    ul,
+    ol {
+        li {
+            margin-bottom: 16px;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.project-nav {
+    &-wrap {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid;
+        border-bottom: 1px solid;
+        border-color: $border-color;
+
+        @include xs {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+    }
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .icon-btn {
+        --btn-size: 60px;
+        font-size: 20px;
+        background-color: $title-color;
+        color: $white-color;
+        border: none;
+
+        &:hover {
+            background-color: $theme-color;
+        }
+    }
+
+    .box-title {
+        margin-bottom: 4px;
+    }
+
+    @include xs {
+        .media-body {
+            display: none;
+        }
+    }
+}

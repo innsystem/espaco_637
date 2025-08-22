@@ -1,0 +1,309 @@
+.footer-widget {
+    margin-bottom: 50px;
+    position: relative;
+
+    &.footer-line {
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -100px;
+            background-color: #333333;
+            width: 1px;
+            height: 300px;
+
+            @include ml {
+                display: none;
+            }
+        }
+    }
+
+
+    &,
+    .widget {
+        padding: 0;
+        border: none;
+        padding-bottom: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    .form-group {
+        >i {
+            color: $theme-color;
+            top: 18px;
+        }
+    }
+
+    input,
+    select {
+        color: #666666;
+
+        @include inputPlaceholder {
+            color: #666666;
+        }
+    }
+
+    .sidebar-gallery {
+        max-width: 287px;
+        gap: 11px;
+
+        .gallery-thumb {
+            border-radius: 5px;
+        }
+    }
+
+    .widget_title {
+        color: $white-color;
+        font-size: 18px;
+        font-weight: 500;
+        text-transform: capitalize;
+        margin: -0.09em 0 32px 0;
+        padding: 0;
+
+        &:after,
+        &:before {
+            display: none;
+        }
+
+        img {
+            margin: -6px 3px 0 0;
+        }
+    }
+
+    &.widget_meta,
+    &.widget_pages,
+    &.widget_archive,
+    &.widget_categories,
+    &.widget_nav_menu {
+        ul {
+            margin-top: -5px;
+        }
+
+        .menu,
+        >ul {
+            margin-bottom: -5px;
+        }
+
+        a {
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 0 0 30px;
+            margin-bottom: 20px;
+            font-family: $body-font;
+            color: #D8DBDC;
+            display: block;
+            max-width: 100%;
+            width: max-content;
+            padding-right: 0;
+            background-color: transparent;
+            border: none !important;
+            box-shadow: none;
+            position: relative;
+
+            &:before {
+                content: "";
+                position: absolute;
+                mask-image: url("../img/icon/right-arrow.svg");
+                mask-repeat: no-repeat;
+                background-color: $body-color;
+                color: $body-color;
+                width: 20px;
+                height: 20px;
+                font-weight: 600;
+                left: 0;
+                top: 2px;
+                transform: translateY(0);
+                font-size: 0.9em;
+                border: none;
+                z-index: 2;
+                transition: 0.4s;
+            }
+
+            &:hover {
+                background-color: transparent;
+                color: $theme-color;
+
+                &:before {
+                    background-color: $theme-color;
+                }
+            }
+        }
+
+        li {
+            >span {
+                @include equal-size(auto);
+                position: relative;
+                background-color: transparent;
+                color: $body-color;
+                line-height: 1;
+            }
+
+            &:last-child {
+                a {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    .recent-post {
+        max-width: 300px;
+        margin-top: -0.4em;
+        margin-bottom: 20px;
+
+        .media-img {
+            max-width: 74px;
+
+            &:after {
+                line-height: 74px;
+            }
+        }
+
+        .post-title {
+            color: $white-color;
+            font-weight: 500;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .recent-post-meta {
+            a {
+                font-weight: 400;
+                line-height: 1.2;
+            }
+
+            i {
+                color: $theme-color;
+            }
+
+            a:hover {
+                i {
+                    color: $theme-color;
+                }
+            }
+        }
+    }
+
+    .sidebar-gallery {
+        max-width: 250px;
+    }
+}
+
+.about-logo {
+    margin-bottom: 15px;
+}
+
+.th-widget-about {
+    max-width: 379px;
+
+    .about-logo {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .about-text {
+        text-align: center;
+        margin-bottom: 26px;
+        margin-top: -0.4em;
+    }
+    &.style2 {
+        max-width: 435px;
+    }
+}
+
+.footer-text {
+    margin-top: -0.5em;
+    margin-bottom: 25px;
+}
+
+.social-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .social-title {
+        font-size: 20px;
+        color: $white-color;
+        font-weight: 600;
+        margin-right: 20px;
+        margin-bottom: 0;
+    }
+}
+
+.icon-group {
+    a {
+        color: $white-color;
+        font-size: 18px;
+        margin-right: 17px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.newsletter-form {
+    position: relative;
+    max-width: 465px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .th-btn {
+        min-width: 145px;
+        padding: 21px 20px;
+    }
+
+    &.style2 {
+        max-width: 377px;
+
+        select,
+        .form-control,
+        .form-select,
+        textarea,
+        input { 
+            background-color: #24272E; 
+            border-radius: 48px 0 0 48px;  
+            font-size: 14px;
+            @include inputPlaceholder {
+                color: #D8DBDC;
+            }
+        }
+        .th-btn {
+            border-radius: 0 48px 48px 0;
+        }
+    }
+}
+
+@include lg {
+    .footer-widget {
+
+        &.widget_meta,
+        &.widget_pages,
+        &.widget_archive,
+        &.widget_categories,
+        &.widget_nav_menu {
+            a {
+                margin-bottom: 16px;
+            }
+
+        }
+    }
+}
+
+@include sm {
+    .footer-widget {
+        .widget_title {
+            margin-bottom: 35px;
+        }
+    }
+
+    .social-box.mb-30 {
+        margin-bottom: 25px;
+    }
+}

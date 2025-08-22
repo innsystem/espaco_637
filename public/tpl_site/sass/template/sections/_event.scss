@@ -1,0 +1,121 @@
+.event-area {
+	position: relative;
+	padding: 159px 142px;
+	z-index: 2;
+
+	@include xxl {
+		padding: 159px 80px;
+	}
+
+	@include ml {
+		padding: 159px 30px;
+	}
+
+	@include lg {
+		padding: 120px 20px;
+	}
+
+	&:before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(0deg, rgba(24, 26, 30, 0.4), rgba(24, 26, 30, 0.4));
+		z-index: -1;
+	}
+}
+
+.event-item {
+	background: rgba(255, 255, 255, 0.2);
+	border: 1px solid $white-color;
+	padding: 24px;
+	max-width: 544px;
+
+	@include lg {
+		max-width: 100%;
+	}
+
+	@include vxs {
+		padding: 0;
+	}
+
+	.box-content {
+		background-color: #184040;
+		padding: 60px 55px;
+		text-align: center;
+
+		@include xl {
+			padding: 40px 30px;
+		}
+
+		@include vxs {
+			padding: 30px 20px;
+		}
+
+		.box-title {
+			font-size: 28px;
+
+			@include vxs {
+				font-size: 24px;
+			}
+		}
+
+		.box-text {
+			color: $white-color;
+			max-width: 391px;
+			display: block;
+			margin: auto auto 45px auto;
+		}
+
+		.th-btn {
+			padding: 11px 20px;
+
+			&:hover.th-icon:after {
+				background-color: $white-color;
+			}
+		}
+	}
+}
+
+.event-wrapp {
+	.discount-wrapp {
+		display: block;
+		margin: 30px auto 30px auto;
+	}
+}
+
+/* event-card start --------------------------*/
+.event-card {
+	position: relative;
+	z-index: 2;
+
+	.box-content {
+		position: relative;
+		background: #0B0B0C;
+		border: 1px solid #666666;
+		padding: 80px 50px;
+		text-align: center;
+		margin: -200px 24px 0 24px;
+		z-index: 3;
+
+		@include ml {
+			padding: 60px 30px;
+		}
+		@include lg {
+			padding: 40px 20px;
+		}
+		@include xs {
+			margin: -100px 24px 0 24px; 
+		}
+	}
+
+	.box-title {
+		font-size: 28px;
+		@include xl {
+			font-size: 24px;
+		}
+	}
+
+	.box-text {
+		margin-bottom: 46px;
+	}
+}

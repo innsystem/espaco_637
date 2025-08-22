@@ -1,0 +1,146 @@
+/* Why Area ---------------------------------- */
+.choose-feature {
+    &-wrap {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        margin-bottom: 60px;
+
+        @include lg {
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 50px;
+        }
+
+        @include xs {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+
+    background-color: $white-color;
+    box-shadow: 0px 10px 50px rgba(204, 204, 204, 0.32);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    text-align: left;
+
+    @include sm {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .box-title {
+        margin: -0.24em 0;
+        max-width: 190px;
+    }
+
+    &:hover {
+        .box-icon {
+            img {
+                transform: rotateY(180deg);
+            }
+        }
+    }
+}
+
+/* video 1 ---------------------------------- */
+.video-area {
+    position: relative;
+    z-index: 1;
+
+    &:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(15, 16, 19, 0.5), rgba(15, 16, 19, 0.5));
+        z-index: -1;
+    }
+}
+
+.booking-area2 {
+    position: relative;
+    z-index: 2;
+
+    &:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(15, 16, 19, 0.7), rgba(15, 16, 19, 0.7));
+        z-index: -1;
+    }
+}
+
+/* Why 1 ---------------------------------- */
+.why-wrap1 {
+    display: flex;
+    background: $light-color2;
+    .why-img-box1 {
+        width: 50%;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        @include ml {
+            width: auto;
+            flex: 1;
+        }
+    }
+    .why-wrap-content {
+        padding: 120px;
+        width: 50%;
+        @include xxl {
+            padding: 120px 80px;
+        }
+        @include ml {
+            width: auto;
+            flex: 1;
+        }
+        @include md {
+            padding: 80px 60px;
+        }
+        @include xs {
+            padding: 80px 30px;
+        }
+    }
+    .why-grid-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        li {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .box-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: $body-bg;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+            img {
+                filter: brightness(99);
+            }
+        }
+        .box-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: $white-color;
+        }
+        @include sm {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+    @include xl {
+        display: block;
+    }
+}

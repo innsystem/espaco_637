@@ -1,0 +1,87 @@
+/* error area --------------------------------- */
+.error-content {
+	background-color: $black-color2;
+	border-radius: 500px 0px 0px 500px;
+	padding: 210px 163px;
+	text-align: center;
+
+	@media(max-width: 1699px) {
+		padding: 165px 120px;
+	}
+
+	@media(max-width: 1499px) {
+		padding: 138px 120px;
+	}
+
+	@include ml {
+		padding: 100px 80px;
+	}
+
+	@include xl {
+		padding: 120px 40px;
+	}
+
+	@include lg {
+		border-radius: 300px;
+	}
+
+	@include md {
+		border-radius: 150px;
+	}
+
+	@media(max-width: 480px) {
+		padding: 80px 20px;
+		border-radius: 50px;
+	}
+
+	.box-title {
+		font-weight: 700;
+		font-size: 150px;
+		color: $theme-color;
+		margin-bottom: 6px;
+
+		@include xl { 
+			font-size: 80px;
+		}
+
+	}
+
+}
+
+.error-text {
+	margin-bottom: 35px;
+}
+
+.error-img {
+	border-radius: 0px 500px 500px 0px;
+
+	@include lg {
+		height: 450px;
+		border-radius: 300px;
+	}
+
+	@include md {
+		border-radius: 150px;
+	}
+
+	@media(max-width: 480px) {
+		border-radius: 50px;
+	}
+
+	img {
+		border-radius: 0px 500px 500px 0px;
+
+		@include lg {
+			height: 450px;
+			border-radius: 300px;
+		}
+
+		@include md {
+			border-radius: 150px;
+		}
+
+		@media(max-width: 480px) {
+			border-radius: 50px;
+		}
+	}
+}

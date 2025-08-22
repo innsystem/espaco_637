@@ -1,0 +1,107 @@
+/* Price Card ---------------------------------- */
+.price-card {
+    position: relative;
+    z-index: 2;
+    background-color: #24272E;
+
+    .header-price {
+        background-color: #181A1E;
+        padding: 28px 30px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+    }
+
+    .box-title {
+        font-size: 28px;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .box-icon {
+        @include md {
+            display: none;
+        }
+    }
+
+    .box-text {
+        margin-bottom: 40px;
+    }
+
+    .box-price {
+        font-family: $title-font;
+        font-weight: 500;
+        font-size: 40px;
+        letter-spacing: 0.02em;
+        text-transform: capitalize;
+        color: $white-color;
+        margin-bottom: 0px;
+
+        .duration {
+            font-family: $body-font;
+            font-size: 18px;
+            color: $body-color;
+            font-weight: 600;
+        }
+    }
+
+    .box-content {
+        padding: 48px;
+
+        @include xl {
+            padding: 30px;
+        }
+    }
+
+    .checklist li {
+        gap: 16px;
+        font-size: 18px;
+        color: $white-color;
+
+        &.unavailable {
+            &:before {
+                content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 3.33782C15.5291 2.48697 13.8214 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 11.3151 21.9311 10.6462 21.8 10' stroke='%23D8DBDC' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M8 12.5C8 12.5 9.5 12.5 11.5 16C11.5 16 17.0588 6.83333 22 5' stroke='%23D8DBDC' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+            }
+        }
+    }
+    .th-btn2,
+    .th-btn {
+        justify-content: space-between;
+        margin-top: 45px;
+    }
+
+    .tag {
+        position: absolute;
+        top: 16px;
+        right: 0;
+        background-color: $theme-color;
+        font-size: 16px;
+        color: $white-color;
+        padding: 8px 10px;
+        line-height: 12px;
+        text-align: center;
+        font-weight: 500;
+        min-width: 104px;
+        height: 29px;
+        clip-path: path("M0 0H104V29H0L8 14.5L0 0Z");
+        opacity: 0;
+    }
+
+    &.item-active {
+        .tag {
+            opacity: 1;
+        }
+
+        .th-btn {
+            background-color: $theme-color;
+            border-color: $theme-color;
+        }
+    }
+
+}
+
+.faq-btn {
+    margin-top: 70px;
+    text-align: center;
+}
