@@ -27,6 +27,7 @@
                                 <label for="category_id">Categoria:</label>
                                 <select id="category_id" name="category_id" class="form-control">
                                     <option value="">Todas</option>
+                                    <option value="null">Sem categoria</option>
                                     @php
                                         $categories = App\Models\Category::active()->ordered()->get();
                                     @endphp

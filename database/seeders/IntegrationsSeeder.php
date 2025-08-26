@@ -21,8 +21,8 @@ class IntegrationsSeeder extends Seeder
                 'description' => 'Ferramenta SMTP utilizada para o envio de e-mail transacionais.',
                 'type' => 'communication',
                 'settings' => [
-                    "site_name" => "InnSystem V2",
-                    "site_email" => "contato@innsystem.com.br",
+                    "site_name" => "Espaço 637",
+                    "site_email" => "contato@espaco637.com.br",
                     "client_id" => "b5ee542704980cd49f503fb1914d077c",
                     "client_secret" => "5a21fae30e1c56a41accfa7855f233f2",
                     "id_template" => "290254"
@@ -43,7 +43,7 @@ class IntegrationsSeeder extends Seeder
                 'slug' => 'whatsapp-api',
                 'description' => 'Ferramenta de envio de notificações no whatsapp.',
                 'type' => 'communication',
-                'settings' => ["host" => 'https://evolution.integreai.com.br/message/sendText/innv2', "token" => 'AFC34EC154DF-4996-BC51-B88B9AF488F3'],
+                'settings' => ["host" => 'https://evolution.integreai.com.br/message/sendText/espaco637', "token" => 'AFC34EC154DF-4996-BC51-B88B9AF488F3'],
                 'status' => 1
             ],
 
@@ -63,7 +63,7 @@ class IntegrationsSeeder extends Seeder
                     "fee_installment" => "0",
                     "max_installments" => "12",
                     "installments_free" => "2",
-                    "webhook_url" => "https://integrations.innsystem.com.br/mercadopago/webhook"
+                    "webhook_url" => "https://integrations.espaco637.com.br/mercadopago/webhook"
                 ],
                 'status' => 1
             ],
@@ -87,10 +87,19 @@ class IntegrationsSeeder extends Seeder
             ],
 
             [
-                'name' => 'Shopee',
-                'slug' => 'shopee',
-                'description' => 'Integração com Shopee para obter links de produtos e afiliados.',
-                'type' => 'marketplaces',
+                'name' => 'Instagram',
+                'slug' => 'instagram',
+                'description' => 'Integração com Instagram para compartilhamento de fotos e eventos.',
+                'type' => 'social_media',
+                'settings' => null,
+                'status' => 1
+            ],
+
+            [
+                'name' => 'Facebook',
+                'slug' => 'facebook',
+                'description' => 'Integração com Facebook para divulgação de eventos e promoções.',
+                'type' => 'social_media',
                 'settings' => null,
                 'status' => 1
             ],

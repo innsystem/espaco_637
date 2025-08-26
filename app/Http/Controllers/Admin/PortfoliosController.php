@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use App\Models\Status;
 use App\Models\Portfolio;
+use App\Models\PortfolioImage;
+use App\Models\Category;
 use Carbon\Carbon;
 use App\Services\PortfolioService;
 
@@ -31,7 +33,7 @@ class PortfoliosController extends Controller
     public function load(Request $request)
     {
         $query = [];
-        $filters = $request->only(['name', 'status', 'date_range']);
+        $filters = $request->only(['name', 'status', 'category_id', 'date_range']);
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
 
@@ -41,6 +43,10 @@ class PortfoliosController extends Controller
 
         if (!empty($filters['status'])) {
             $query['status'] = $filters['status'];
+        }
+
+        if (!empty($filters['category_id'])) {
+            $query['category_id'] = $filters['category_id'];
         }
 
         if (!empty($filters['date_range'])) {
@@ -61,8 +67,9 @@ class PortfoliosController extends Controller
     public function create()
     {
         $statuses = Status::default();
+        $categories = $this->portfolioService->getAllCategories();
 
-        return view($this->folder . '.form', compact('statuses'));
+        return view($this->folder . '.form', compact('statuses', 'categories'));
     }
 
     public function store(Request $request)
@@ -74,6 +81,7 @@ class PortfoliosController extends Controller
             'slug' => 'required|unique:portfolios,slug',
             'description' => 'nullable',
             'status' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
         );
         $messages = array(
             'title.required' => 'título é obrigatório',
@@ -82,6 +90,7 @@ class PortfoliosController extends Controller
             'slug.unique' => 'url amigável já existe',
             'description.nullable' => 'descrição pode ser nulo',
             'status.required' => 'status é obrigatório',
+            'category_id.exists' => 'categoria selecionada não existe',
         );
 
         $validator = Validator::make($result, $rules, $messages);
@@ -102,6 +111,7 @@ class PortfoliosController extends Controller
                     $portfolio->images()->create([
                         'image_path' => $path,
                         'featured' => $index == $thumbIndex,
+                        'sort_order' => $index,
                     ]);
                 }
             }
@@ -114,8 +124,9 @@ class PortfoliosController extends Controller
     {
         $result = $this->portfolioService->getPortfolioById($id);
         $statuses = Status::default();
+        $categories = $this->portfolioService->getAllCategories();
 
-        return view($this->folder . '.form', compact('result', 'statuses'));
+        return view($this->folder . '.form', compact('result', 'statuses', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -127,6 +138,7 @@ class PortfoliosController extends Controller
             'slug'         => "unique:portfolios,slug,$id,id",
             'description' => 'nullable',
             'status' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
         );
         $messages = array(
             'title.required' => 'título é obrigatório',
@@ -135,6 +147,7 @@ class PortfoliosController extends Controller
             'slug.unique' => 'url amigável já existe',
             'description.nullable' => 'descrição pode ser nulo',
             'status.required' => 'status é obrigatório',
+            'category_id.exists' => 'categoria selecionada não existe',
         );
 
         $validator = Validator::make($result, $rules, $messages);
@@ -150,11 +163,15 @@ class PortfoliosController extends Controller
                 $images = $request->file('images');
                 $thumbIndex = $request->input('thumb');
 
+                // Pegar o maior sort_order atual
+                $maxOrder = $portfolio->images()->max('sort_order') ?? -1;
+
                 foreach ($images as $index => $image) {
                     $path = $image->store('portfolios', 'public');
                     $portfolio->images()->create([
                         'image_path' => $path,
                         'featured' => $index == $thumbIndex,
+                        'sort_order' => $maxOrder + $index + 1,
                     ]);
                 }
             }
@@ -180,18 +197,26 @@ class PortfoliosController extends Controller
     public function defineImageThumb(Request $request, $portfolio_id)
     {
         $image_id = $request->input('image_id');
+        
+        // Remove destaque de todas as imagens do portfólio
+        PortfolioImage::where('portfolio_id', $portfolio_id)->update(['featured' => 0]);
+        
+        // Define a nova imagem destacada
+        PortfolioImage::where('id', $image_id)->update(['featured' => 1]);
+        
+        return response()->json('Imagem destacada definida com sucesso', 200);
+    }
 
-        $portfolio = Portfolio::findOrFail($portfolio_id);
+    public function reorderImages(Request $request, $portfolio_id)
+    {
+        $imageOrders = $request->input('image_orders', []);
+        
+        if (empty($imageOrders)) {
+            return response()->json('Nenhuma ordem de imagem fornecida', 422);
+        }
 
-        // Certifique-se de que a imagem pertence ao portfólio
-        $image = $portfolio->images()->where('id', $image_id)->firstOrFail();
-
-        // Atualiza todas as imagens para `featured = 0`
-        $portfolio->images()->update(['featured' => 0]);
-
-        // Define a imagem selecionada como `featured = 1`
-        $image->update(['featured' => 1]);
-
-        return response()->json('Imagem destacada atualizada com sucesso!', 200);
+        $this->portfolioService->reorderImages($portfolio_id, $imageOrders);
+        
+        return response()->json('Ordem das imagens atualizada com sucesso', 200);
     }
 }

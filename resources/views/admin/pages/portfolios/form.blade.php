@@ -7,18 +7,20 @@
             </div>
             <div id="preview-container" class="mt-2"></div>
             <hr>
-            @foreach($result->images as $image)
-            <div id="row_portfolio_image_{{$image->id}}" class="border p-1 rounded mb-2" data-id="{{ $image->id }}" style="display: inline-block; margin-right: 10px; text-align: center;">
-                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagem" class="avatar-md border rounded" style="object-fit: cover; margin-bottom: 5px;">
-                <br>
-                <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
-                    <label for="thumb_{{$image->id}}" class="cursor-pointer fs-7">
-                        <input type="radio" id="thumb_{{$image->id}}" name="thumb_portfolio" value="{{ $image->id }}" {{ $image->featured ? 'checked' : '' }} class="m-0 p-0 cursor-pointer"> Capa
-                    </label>
-                    <button type="button" class="btn btn-sm btn-danger fs-7 p-0 px-1 button-portfolio-images-delete" data-portfolio-image-id="{{ $image->id }}" data-portfolio-name="{{ isset($result->title) ? $result->title : '' }}">Remover</button>
+            @if(isset($result->images))
+                @foreach($result->images as $image)
+                <div id="row_portfolio_image_{{$image->id}}" class="border p-1 rounded mb-2" data-id="{{ $image->id }}" style="display: inline-block; margin-right: 10px; text-align: center;">
+                    <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagem" class="avatar-md border rounded" style="object-fit: cover; margin-bottom: 5px;">
+                    <br>
+                    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                        <label for="thumb_{{$image->id}}" class="cursor-pointer fs-7">
+                            <input type="radio" id="thumb_{{$image->id}}" name="thumb_portfolio" value="{{ $image->id }}" {{ $image->featured ? 'checked' : '' }} class="m-0 p-0 cursor-pointer"> Capa
+                        </label>
+                        <button type="button" class="btn btn-sm btn-danger fs-7 p-0 px-1 button-portfolio-images-delete" data-portfolio-image-id="{{ $image->id }}" data-portfolio-name="{{ isset($result->title) ? $result->title : '' }}">Remover</button>
+                    </div>
                 </div>
-            </div>
-            @endforeach
+                @endforeach
+            @endif
         </div>
 
         <div class="form-group mb-3">
@@ -31,6 +33,17 @@
             <label for="slug" class="col-sm-12">URL Amigável:</label>
             <div class="col-sm-12">
                 <input type="text" class="form-control" id="slug" name="slug" placeholder="Digite o URL Amigável" value="{{ isset($result->slug) ? $result->slug : '' }}">
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="category_id" class="col-sm-12">Categoria:</label>
+            <div class="col-sm-12">
+                <select name="category_id" id="category_id" class="form-select">
+                    <option value="">Selecione uma categoria</option>
+                    @foreach($categories as $category)
+                    <option value="{{$category->id}}" @if (isset($result->category_id) && $result->category_id == $category->id) selected @endif>{{$category->title}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="form-group mb-3">

@@ -31,6 +31,9 @@
     <!-- Plugin css -->
     <link rel="stylesheet" href="{{ asset('/tpl_dashboard/vendor/jquery-toast-plugin/jquery.toast.min.css') }}">
 
+    <!-- Icon Gallery CSS -->
+    <link rel="stylesheet" href="{{ asset('/tpl_dashboard/css/icon-gallery.css') }}">
+
     @yield('pageCSS')
 </head>
 
@@ -206,7 +209,7 @@
 
         @yield('pageMODAL')
 
-
+        @include('components.icon-gallery-modal')
     </div>
     <!-- END wrapper -->
 
@@ -223,6 +226,9 @@
     <script src="{{ asset('/plugins/jquery.mask.templates.js') }}"></script>
 
     <script src="{{ asset('/tpl_dashboard/vendor/jquery-toast-plugin/jquery.toast.min.js') }}"></script>
+
+    <!-- Icon Gallery JS -->
+    <script src="{{ asset('/tpl_dashboard/js/icon-gallery.js') }}"></script>
 
     @yield('pageJS')
 

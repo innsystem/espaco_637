@@ -14,7 +14,5 @@ class PagesSeeder extends Seeder
     public function run(): void
     {
         \DB::table('pages')->delete();
-        
-        Page::factory()->count(10)->create();
     }
 }

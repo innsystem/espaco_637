@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\Models\Portfolio;
 use App\Models\PortfolioImage;
+use App\Models\Category;
 
 class PortfolioService
 {
 	public function getAllPortfolios($filters = [], $paginate = false, $perPage = 10)
 	{
-		$query = Portfolio::query();
+		$query = Portfolio::with(['category', 'images' => function($query) {
+			$query->orderBy('sort_order', 'asc');
+		}]);
 
 		if (!empty($filters['name'])) {
 			$query->where('title', 'LIKE', '%' . $filters['name'] . '%');
@@ -19,9 +22,15 @@ class PortfolioService
 			$query->where('status', $filters['status']);
 		}
 
+		if (!empty($filters['category_id'])) {
+			$query->where('category_id', $filters['category_id']);
+		}
+
 		if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
 			$query->whereBetween('created_at', [$filters['start_date'], $filters['end_date']]);
 		}
+
+		$query->ordered();
 
 		if ($paginate) {
 			return $query->paginate($perPage);
@@ -30,9 +39,24 @@ class PortfolioService
 		return $query->get();
 	}
 
+	public function getPortfoliosByCategory($categoryId = null)
+	{
+		$query = Portfolio::with(['category', 'images' => function($query) {
+			$query->orderBy('sort_order', 'asc');
+		}])->active();
+		
+		if ($categoryId) {
+			$query->where('category_id', $categoryId);
+		}
+
+		return $query->ordered()->get();
+	}
+
 	public function getPortfolioById($id)
 	{
-		return Portfolio::findOrFail($id);
+		return Portfolio::with(['category', 'images' => function($query) {
+			$query->orderBy('sort_order', 'asc');
+		}])->findOrFail($id);
 	}
 
 	public function createPortfolio($data)
@@ -73,5 +97,27 @@ class PortfolioService
 
 		// Após tratar o destaque, exclua a imagem atual
 		return $model->delete();
+	}
+
+	public function updateImageOrder($imageId, $newOrder)
+	{
+		$image = PortfolioImage::findOrFail($imageId);
+		$image->sort_order = $newOrder;
+		return $image->save();
+	}
+
+	public function reorderImages($portfolioId, $imageOrders)
+	{
+		foreach ($imageOrders as $order => $imageId) {
+			PortfolioImage::where('id', $imageId)
+				->where('portfolio_id', $portfolioId)
+				->update(['sort_order' => $order]);
+		}
+		return true;
+	}
+
+	public function getAllCategories()
+	{
+		return Category::active()->ordered()->get();
 	}
 }

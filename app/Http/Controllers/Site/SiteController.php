@@ -10,10 +10,22 @@ use App\Models\Testimonial;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Slider;
+use App\Models\Statistic;
+use App\Models\PhilosophyPoint;
+use App\Models\ServiceFeature;
+use App\Models\Faq;
+use App\Services\PortfolioService;
+
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
 {
+    protected $portfolioService;
+
+    public function __construct(PortfolioService $portfolioService)
+    {
+        $this->portfolioService = $portfolioService;
+    }
 
     public function index()
     {
@@ -30,8 +42,18 @@ class SiteController extends Controller
             ->get();
 
         $products = Product::active()->get();
+        $statistics = Statistic::where('status', true)->orderBy('sort_order')->get();
+        $philosophyPoints = PhilosophyPoint::where('status', true)->orderBy('sort_order')->get();
+        $serviceFeatures = ServiceFeature::where('status', true)->orderBy('sort_order')->get();
+        $faqs = Faq::where('status', true)->orderBy('sort_order')->get();
+        
+        // Buscar portfólios organizados por categoria
+        $portfoliosByCategory = $this->portfolioService->getPortfoliosByCategory();
+        
+        // Buscar configurações do site
+        $settings = \App\Models\Setting::first();
 
-        return view('site.pages.home', compact('sliders', 'products'));
+        return view('site.pages.home', compact('sliders', 'products', 'statistics', 'philosophyPoints', 'serviceFeatures', 'faqs', 'settings', 'portfoliosByCategory'));
     }
 
     public function pageShow($slug)
@@ -50,17 +72,35 @@ class SiteController extends Controller
 
     public function portfolioShow($slug)
     {
-        $portfolio = Portfolio::where('slug', $slug)->first();
+        $portfolio = Portfolio::with(['category', 'images' => function($query) {
+            $query->orderBy('sort_order', 'asc');
+        }])->where('slug', $slug)->active()->first();
+
+        if (!$portfolio) {
+            abort(404);
+        }
 
         return view('examples.portfolios_show', compact('portfolio'));
     }
 
-    public function categoriesIndex()
+    public function categoriesIndex(Request $request)
     {
+        $categorySlug = $request->query('category');
         $categories = Category::active()->ordered()->get();
-        $products = Product::active()->get();
+        $selectedCategory = null;
+        
+        if ($categorySlug) {
+            $selectedCategory = Category::where('slug', $categorySlug)->active()->first();
+            if ($selectedCategory) {
+                $portfoliosByCategory = $this->portfolioService->getPortfoliosByCategory($selectedCategory->id);
+            } else {
+                $portfoliosByCategory = $this->portfolioService->getPortfoliosByCategory();
+            }
+        } else {
+            $portfoliosByCategory = $this->portfolioService->getPortfoliosByCategory();
+        }
 
-        return view('site.pages.categories', compact('categories', 'products'));
+        return view('site.pages.categories', compact('categories', 'portfoliosByCategory', 'selectedCategory'));
     }
 
     public function productsByCategory($slug)
@@ -90,16 +130,19 @@ class SiteController extends Controller
 
     public function about()
     {
-        return view('site.pages.about');
+        $philosophyPoints = PhilosophyPoint::where('status', true)->orderBy('sort_order')->get();
+        return view('site.pages.about', compact('philosophyPoints'));
     }
 
     public function services()
     {
-        return view('site.pages.services');
+        $serviceFeatures = ServiceFeature::where('status', true)->orderBy('sort_order')->get();
+        return view('site.pages.services', compact('serviceFeatures'));
     }
 
-    public function sustainability()
+    public function contact()
     {
-        return view('site.pages.sustainability');
+        $faqs = Faq::where('status', true)->orderBy('sort_order')->get();
+        return view('site.pages.contact', compact('faqs'));
     }
 }

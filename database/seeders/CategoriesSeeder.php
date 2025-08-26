@@ -11,33 +11,47 @@ class CategoriesSeeder extends Seeder
     {
         $categories = [
             [
-                'title' => 'Madeiras Naturais',
-                'slug' => 'madeiras-naturais',
-                'description' => 'Madeiras naturais de alta qualidade para acabamentos premium',
-                'image' => null,
+                'title' => 'Casamentos',
+                'slug' => 'casamentos',
+                'description' => 'Eventos de casamento e cerimônias',
                 'order' => 1,
-                'status' => 1,
+                'status' => 1
             ],
             [
-                'title' => 'Madeiras Compostas',
-                'slug' => 'madeiras-compostas',
-                'description' => 'Madeiras compostas e engineered para aplicações versáteis',
-                'image' => null,
+                'title' => 'Aniversários',
+                'slug' => 'aniversarios',
+                'description' => 'Festas de aniversário e celebrações',
                 'order' => 2,
-                'status' => 1,
+                'status' => 1
             ],
             [
-                'title' => 'Madeiras Européias',
-                'slug' => 'madeiras-europeias',
-                'description' => 'Madeiras importadas da Europa com qualidade superior',
-                'image' => null,
+                'title' => 'Eventos Corporativos',
+                'slug' => 'eventos-corporativos',
+                'description' => 'Reuniões, treinamentos e eventos empresariais',
                 'order' => 3,
-                'status' => 1,
+                'status' => 1
             ],
+            [
+                'title' => 'Formaturas',
+                'slug' => 'formaturas',
+                'description' => 'Cerimônias de formatura e colação de grau',
+                'order' => 4,
+                'status' => 1
+            ],
+            [
+                'title' => 'Confraternizações',
+                'slug' => 'confraternizacoes',
+                'description' => 'Eventos de confraternização e reuniões sociais',
+                'order' => 5,
+                'status' => 1
+            ]
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            Category::updateOrCreate(
+                ['slug' => $category['slug']],
+                $category
+            );
         }
     }
 }

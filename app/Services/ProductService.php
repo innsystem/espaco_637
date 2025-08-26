@@ -26,8 +26,12 @@ class ProductService
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['category_id'])) {
-            $query->where('category_id', $filters['category_id']);
+        if (isset($filters['category_id'])) {
+            if ($filters['category_id'] === null) {
+                $query->whereNull('category_id');
+            } else {
+                $query->where('category_id', $filters['category_id']);
+            }
         }
 
         if (!empty($filters['start_date']) && !empty($filters['end_date'])) {

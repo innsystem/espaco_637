@@ -1,0 +1,64 @@
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 80px;
+}
+
+.icon-item:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.icon-item.selected {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.icon-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #6c757d;
+}
+
+.icon-item.selected i {
+    color: #007bff;
+}
+
+.icon-item small {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+.icon-item.selected small {
+    color: #007bff;
+    font-weight: 500;
+}
+
+/* Modal específico para galeria de ícones */
+.icon-gallery-modal .modal-dialog {
+    max-width: 800px;
+}
+
+.icon-gallery-modal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.icon-gallery-search {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}

@@ -1,10 +1,10 @@
 <form id="form-request-products">
     <div class="modal-body">
         <div class="form-group mb-3">
-            <label for="category_id" class="col-sm-12">Categoria:</label>
+            <label for="category_id" class="col-sm-12">Categoria: <small class="text-muted">(Opcional)</small></label>
             <div class="col-sm-12">
                 <select name="category_id" id="category_id" class="form-select">
-                    <option value="">Selecione uma categoria</option>
+                    <option value="">Sem categoria</option>
                     @foreach($categories as $category)
                     <option value="{{$category->id}}" @if (isset($result->category_id) && $result->category_id == $category->id) selected @endif>{{$category->title}}</option>
                     @endforeach

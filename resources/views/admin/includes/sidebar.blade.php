@@ -63,6 +63,24 @@
 
 <li class="side-nav-title">Recursos</li>
 
+@if (auth()->user()->hasPermission('admin.categories.index'))
+<li class="side-nav-item">
+    <a href="{{ route('admin.categories.index') }}" class="side-nav-link">
+        <i class="ri-list-settings-line"></i>
+        <span> Categorias </span>
+    </a>
+</li>
+@endif  
+
+@if (auth()->user()->hasPermission('admin.products.index'))
+<li class="side-nav-item">
+    <a href="{{ route('admin.products.index') }}" class="side-nav-link">
+        <i class="ri-list-settings-line"></i>
+        <span> Produtos </span>
+    </a>
+</li>
+@endif
+
 @if (auth()->user()->hasPermission('admin.customers.index'))
 <li class="side-nav-item">
     <a data-bs-toggle="collapse" href="#sidebarCustomers" aria-expanded="false" aria-controls="sidebarCustomers" class="side-nav-link">
@@ -151,20 +169,39 @@
 </li>
 @endif
 
-@if (auth()->user()->hasPermission('admin.categories.index'))
-<li class="side-nav-item">
-    <a href="{{ route('admin.categories.index') }}" class="side-nav-link">
-        <i class="ri-list-settings-line"></i>
-        <span> Categorias </span>
-    </a>
-</li>
-@endif  
 
-@if (auth()->user()->hasPermission('admin.products.index'))
+@if (auth()->user()->hasPermission('admin.statistics.index'))
 <li class="side-nav-item">
-    <a href="{{ route('admin.products.index') }}" class="side-nav-link">
-        <i class="ri-list-settings-line"></i>
-        <span> Produtos </span>
+    <a href="{{ route('admin.statistics.index') }}" class="side-nav-link">
+        <i class="ri-bar-chart-line"></i>
+        <span> Estatísticas </span>
     </a>
 </li>
-@endif  
+@endif
+
+@if (auth()->user()->hasPermission('admin.philosophy_points.index'))
+<li class="side-nav-item">
+    <a href="{{ route('admin.philosophy_points.index') }}" class="side-nav-link">
+        <i class="ri-heart-line"></i>
+        <span> Filosofia </span>
+    </a>
+</li>
+@endif
+
+@if (auth()->user()->hasPermission('admin.service_features.index'))
+<li class="side-nav-item">
+    <a href="{{ route('admin.service_features.index') }}" class="side-nav-link">
+        <i class="ri-function-line"></i>
+        <span> Recursos dos Serviços </span>
+    </a>
+</li>
+@endif
+
+@if (auth()->user()->hasPermission('admin.faqs.index'))
+<li class="side-nav-item">
+    <a href="{{ route('admin.faqs.index') }}" class="side-nav-link">
+        <i class="ri-question-line"></i>
+        <span> Perguntas Frequentes </span>
+    </a>
+</li>
+@endif

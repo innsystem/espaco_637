@@ -15,19 +15,6 @@ class TransactionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $invoices = Invoice::all();
-        $integrations = Integration::where('type', 'payments')->all();
-
-        foreach ($invoices as $invoice) {
-            Transaction::create([
-                'invoice_id' => $invoice->id,
-                'integration_id' => $integrations->random()->id,
-                'type' => 'income',
-                'amount' => $invoice->total,
-                'gateway_fee' => rand(1, 10),
-                'description' => 'Pagamento recebido para a fatura ' . $invoice->id,
-                'date' => now(),
-            ]);
-        }
+        \DB::table('transactions')->delete();
     }
 }

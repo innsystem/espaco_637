@@ -182,6 +182,39 @@ class PermissionsSeeder extends Seeder
             // import
             ['title' => 'Visualizar importação', 'key' => 'admin.import.index', 'type' => 'import', 'created_at' => now(), 'updated_at' => now()],
             ['title' => 'Importar dados', 'key' => 'admin.import.data', 'type' => 'import', 'created_at' => now(), 'updated_at' => now()],
+            // statistics
+            ['title' => 'Visualizar estatísticas', 'key' => 'admin.statistics.index', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Carregar estatísticas', 'key' => 'admin.statistics.load', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Criar estatística', 'key' => 'admin.statistics.create', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Salvar estatística', 'key' => 'admin.statistics.store', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Editar estatística', 'key' => 'admin.statistics.edit', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Atualizar estatística', 'key' => 'admin.statistics.update', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Excluir estatística', 'key' => 'admin.statistics.delete', 'type' => 'statistics', 'created_at' => now(), 'updated_at' => now()],
+            // philosophy_points
+            ['title' => 'Visualizar pontos da filosofia', 'key' => 'admin.philosophy_points.index', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Carregar pontos da filosofia', 'key' => 'admin.philosophy_points.load', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Criar ponto da filosofia', 'key' => 'admin.philosophy_points.create', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Salvar ponto da filosofia', 'key' => 'admin.philosophy_points.store', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Editar ponto da filosofia', 'key' => 'admin.philosophy_points.edit', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Atualizar ponto da filosofia', 'key' => 'admin.philosophy_points.update', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Excluir ponto da filosofia', 'key' => 'admin.philosophy_points.delete', 'type' => 'philosophy_points', 'created_at' => now(), 'updated_at' => now()],
+            // service_features
+            ['title' => 'Visualizar recursos dos serviços', 'key' => 'admin.service_features.index', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Carregar recursos dos serviços', 'key' => 'admin.service_features.load', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Criar recurso do serviço', 'key' => 'admin.service_features.create', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Salvar recurso do serviço', 'key' => 'admin.service_features.store', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Editar recurso do serviço', 'key' => 'admin.service_features.edit', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Atualizar recurso do serviço', 'key' => 'admin.service_features.update', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Excluir recurso do serviço', 'key' => 'admin.service_features.delete', 'type' => 'service_features', 'created_at' => now(), 'updated_at' => now()],
+            // faqs
+            ['title' => 'Visualizar perguntas frequentes', 'key' => 'admin.faqs.index', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Carregar perguntas frequentes', 'key' => 'admin.faqs.load', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Criar pergunta frequente', 'key' => 'admin.faqs.create', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Salvar pergunta frequente', 'key' => 'admin.faqs.store', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Editar pergunta frequente', 'key' => 'admin.faqs.edit', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Atualizar pergunta frequente', 'key' => 'admin.faqs.update', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Excluir pergunta frequente', 'key' => 'admin.faqs.delete', 'type' => 'faqs', 'created_at' => now(), 'updated_at' => now()],
+
 
         ]);
 

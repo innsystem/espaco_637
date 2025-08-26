@@ -1,184 +1,366 @@
 @extends('site.base')
 
-@section('title', 'Lâminas Naturais e Compostas de Alta Qualidade')
+@section('title', 'Espaço 637 - Eventos Inesquecíveis')
 
 @section('content')
-<div class="th-hero-wrapper hero-3 hero-4 slider-area" id="hero">
-    <div class="swiper th-slider" id="heroSlide4" data-slider-options='{"effect":"fade","autoHeight":true}'>
-        <div class="swiper-wrapper">
-            @foreach($sliders as $slider)
-            <div class="swiper-slide"
-                data-bg-src="@webpUrl($slider->image)"
-                data-bg-srcset="@webpSrcset($slider->image)"
-                data-bg-sizes="(max-width: 768px) 768px, (max-width: 1600px) 1600px, 1920px">
-                <div class="hero-inner">
-                    <div class="container">
-                        <div class="hero-style4">
-                            <div class="hero-star-rating" data-ani="slideinup" data-ani-delay="0.4s">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+    <div class="hero-carousel">
+        @if($sliders && $sliders->count() > 0)
+        @foreach($sliders as $index => $slider)
+        <div class="hero-slide {{ $index === 0 ? 'active' : '' }}" style="background-image: url('{{ asset('storage/' . $slider->image) }}')">
+            <div class="hero-overlay"></div>
+            <div class="hero-slide-content">
+                @if($slider->title)
+                <h2 class="hero-slide-title">{{ $slider->title }}</h2>
+                @endif
+                @if($slider->subtitle)
+                <p class="hero-slide-subtitle">{{ $slider->subtitle }}</p>
+                @endif
+                <div class="hero-slide-buttons">
+                    <a href="#about" class="btn btn-primary btn-lg me-3">Conheça Nossa História</a>
+                    <a href="#events" class="btn btn-outline-light btn-lg">Ver Galeria</a>
+                </div>
+            </div>
+        </div>
+        @endforeach
+        @endif
+    </div>
+
+    <div class="hero-controls">
+        <button class="hero-control prev" id="prevSlide">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="hero-control next" id="nextSlide">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    @if($sliders && $sliders->count() > 1)
+    <div class="hero-indicators">
+        @foreach($sliders as $index => $slider)
+        <span class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></span>
+        @endforeach
+    </div>
+    @else
+    <div class="hero-indicators">
+        <span class="indicator active" data-slide="0"></span>
+        <span class="indicator" data-slide="1"></span>
+        <span class="indicator" data-slide="2"></span>
+    </div>
+    @endif
+</section>
+
+@if(isset($portfoliosByCategory) && $portfoliosByCategory->count() > 0)
+<!-- Events Gallery Section -->
+<section id="events" class="events-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Nossos Eventos</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">Cada celebração é única, assim como nosso espaço</p>
+        </div>
+
+        @php
+        $groupedPortfolios = $portfoliosByCategory->groupBy('category_id');
+        @endphp
+
+        @foreach($groupedPortfolios as $categoryId => $portfolios)
+        @if($portfolios->count() > 0)
+        @php
+        $category = $portfolios->first()->category;
+        $categoryName = $category ? $category->title : 'Eventos';
+        @endphp
+
+        <div class="event-category mb-5">
+            <div class="text-center mb-4">
+                <h3 class="event-category-title">{{ $categoryName }}</h3>
+            </div>
+            @foreach($portfolios as $portfolio)
+            @if($portfolio->images && $portfolio->images->count() > 0)
+            <div class="portfolio-preview mb-4">
+                <div class="row g-3">
+                    @foreach($portfolio->images->take(4) as $image)
+                    <div class="col-6 col-lg-3">
+                        <a href="{{ asset('storage/' . $image->image_path) }}" data-lightbox="portfolio-{{ $categoryId }}" data-title="{{ $portfolio->title }}">
+                            <div class="gallery-item">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $portfolio->title }}" class="gallery-image">
+                                <div class="gallery-overlay">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
                             </div>
-                            <h1 class="hero-title" data-ani="slideinup" data-ani-delay="0.6s">{{ $slider->title }}</h1>
-                            @if($slider->subtitle)
-                            <p class="hero-text" data-ani="slideinup" data-ani-delay="0.7s">{{ $slider->subtitle }}</p>
-                            @endif
-                            @if($slider->href)
-                            <div class="btn-group mt-1" data-ani="slideinup" data-ani-delay="0.8s">
-                                <a href="{{ $slider->href }}" class="th-btn2 th-icon" target="{{ $slider->target }}">SAIBA MAIS<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                            @endif
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+
+                <!-- Botão para ver o evento completo
+                <div class="text-center mt-3">
+                    <a href="{{ route('site.portfolios.show', ['slug' => $portfolio->slug]) }}" class="btn btn-theme btn-sm">
+                        <i class="fas fa-eye"></i> Ver Evento
+                    </a>
+                </div> -->
+            </div>
+            @endif
+            @endforeach
+        </div>
+        @endif
+        @endforeach
+
+        <div class="text-center mt-5">
+            <p class="mb-3">Quer ver mais? Visite nosso espaço e descubra todas as possibilidades</p>
+            <div class="success-badge">
+                <span>+200 eventos realizados com sucesso</span>
+            </div>
+
+            @if(isset($getSettings['cellphone']) && $getSettings['cellphone'] != '')
+            <div class="mt-4">
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $getSettings['cellphone']) }}" target="_Blank" class="btn btn-primary btn-lg">
+                    <i class="fab fa-whatsapp"></i>
+                    Agendar Visita
+                </a>
+            </div>
+            @endif
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- Services Section -->
+<section id="services" class="services-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="service-header-image">
+                    <img src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image">
+                    <div class="service-image-overlay">
+                        <h2 class="service-image-title">O que Oferecemos</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="service-header-image">
+                    <img src="{{ asset('galerias/espaco637/04.jpg') }}" alt="Pavilhão à Noite" class="service-image">
+                    <div class="service-image-overlay">
+                        <div class="service-image-content">
+                            <div class="service-image-subtitle">Estrutura</div>
+                            <div class="service-image-text">Completa</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            @foreach($serviceFeatures as $feature)
+            <div class="col-6 col-md-3">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="{{ $feature->icon }}"></i>
+                    </div>
+                    <h3 class="service-title">{{ $feature->title }}</h3>
+                    <p class="service-description">{{ $feature->description }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <div class="text-center mt-5">
+            <div class="service-cta">
+                <div class="pulse-dot"></div>
+                <span>Tudo isso em um só lugar</span>
+                <div class="pulse-dot"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if(isset($products) && $products->count() > 0)
+<!-- Products Section -->
+<section id="products" class="products-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Nossas Cervejas Artesanais</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">Descubra nossa seleção de cervejas artesanais exclusivas</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach($products as $product)
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('tpl_site/img/placeholder-beer.svg') }}" alt="{{ $product->title }}" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-title">{{ $product->title }}</h4>
+                        <p class="product-description">{{ $product->description }}</p>
+                        @if($product->price > 0)
+                        <div class="product-price">{{ $product->formatted_price }}</div>
+                        @endif
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
 
-        <button class="slider-arrow slider-prev slider-prev-bg"
-            style="background-image: url({{ asset('/storage/sliders/slider_1.png') }});">
-            <span class="arrow">
-                <img src="{{ asset('tpl_site/img/icon/hero-arrow-left.svg') }}" alt="">
-            </span>
-        </button>
-        <button class="slider-arrow slider-next slider-next-bg"
-            style="background-image: url({{ asset('/storage/sliders/slider_2.png') }});">
-            <span class="arrow">
-                <img src="{{ asset('tpl_site/img/icon/hero-arrow-right.svg') }}" alt="">
-            </span>
-        </button>
+        <div class="text-center mt-5">
+            <a href="{{ route('site.categories.index') }}" class="btn btn-theme btn-lg">
+                <i class="fas fa-beer"></i> Ver Todas as Cervejas
+            </a>
+        </div>
     </div>
-</div>
+</section>
+@endif
 
-<div class=" overflow-hidden space" id="about-sec">
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            @foreach($statistics as $statistic)
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="{{ $statistic->value }}">0</div>
+                    <div class="stat-label">{{ $statistic->title }}</div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-12 col-md-8">
-                <div class="about-content-wrap">
-                    <div class="title-area mb-45">
-                        <h2 class="sec-title">Bem-Vindo ao Espaço 637: <br> - Lâminas Importadas <br> - Selecionadas Pessoalmente <br> - Excelência em Prensagem</h2>
-                        <span class="sub-title2 style1">SOBRE NÓS</span>
-                        <p class="sec-text">O Espaço 637 é uma empresa especializada na comercialização da mais alta qualidade de lâminas de madeira natural. Nossas lâminas são cuidadosamente selecionadas para garantir não apenas beleza, mas também durabilidade e praticidade. Com um forte compromisso em facilitar o dia a dia de nossos clientes e parceiros estamos sempre prontos para orientar e auxiliá-los na escolha dos produtos mais adequados. Acreditamos que, ao oferecer o melhor em lâminas, contribuímos para a realização de projetos únicos e inspiradores.</p>
+            <div class="col-lg-6">
+                <div class="about-images">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="about-image-wrapper">
+                                <img src="{{ asset('galerias/espaco637/01.jpg') }}" alt="Exterior do Rancho" class="about-image">
+                            </div>
+                            <div class="about-image-wrapper mt-4">
+                                <img src="{{ asset('galerias/espaco637/06.jpg') }}" alt="Exterior do Rancho" class="about-image">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="about-image-wrapper mt-4">
+                                <img src="{{ asset('galerias/espaco637/05.jpg') }}" alt="Área do Bar" class="about-image">
+                            </div>
+                            <div class="about-image-wrapper mt-4">
+                                <img src="{{ asset('galerias/espaco637/02.jpg') }}" alt="Área do Bar" class="about-image">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
-                <img src="{{ asset('storage/abouts/image_544-777.webp?2') }}" class="img-fluid rounded" alt="imagem de design">
-            </div>
-        </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <h2 class="section-title">Nossa História</h2>
 
-        <div class="row align-items-center mt-4 mt-md-0">
-            <div class="col-12 col-xxl-8">
-                <div class="slider-wrap">
-                    <div class="swiper th-slider about-room-slider" id="aboutroomSlider1"
-                        data-slider-options='{"slidesPerView":"1", "effect": "fade", "aautoHeight": "true"}'>
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="about-room-card">
-                                    <div class="box-img global-img">
-                                        <img src="{{ asset('/storage/abouts/slide_portfolio.webp') }}" alt="imagem de lâmina">
-                                    </div>
-                                    <div class="box-content">
-                                        <div class="box-icon"><img
-                                                src="{{ asset('tpl_site/img/icon/feature_card_3.svg') }}" alt="ícone de característica">
-                                        </div>
-                                        <h3 class="box-title"><a href="room.html">Portfólio Completo de Lâminas</a></h3>
-                                        <p class="box-text">Descubra nossa vasta gama de lâminas naturais e compostas, cuidadosamente selecionadas para a máxima beleza e durabilidade em seus projetos.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="about-room-card">
-                                    <div class="box-img global-img">
-                                        <img src="{{ asset('/storage/abouts/slide_prensa.webp?1') }}" alt="imagem de serviço">
-                                    </div>
-                                    <div class="box-content">
-                                        <div class="box-icon"><img
-                                                src="{{ asset('tpl_site/img/icon/feature_card_2.svg') }}" alt="ícone de serviço">
-                                        </div>
-                                        <h3 class="box-title"><a href="room.html">Prensagem Térmica de Alta Precisão</a></h3>
-                                        <p class="box-text">Nosso serviço de prensagem térmica garante acabamentos perfeitos e máxima adesão, ideal para marcenaria profissional e projetos sob medida.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="about-room-card">
-                                    <div class="box-img global-img">
-                                        <img src="{{ asset('/storage/abouts/slide_compromisso.webp?1') }}" alt="imagem de segurança">
-                                    </div>
-                                    <div class="box-content">
-                                        <div class="box-icon"><img
-                                                src="{{ asset('tpl_site/img/icon/feature_card_1.svg') }}" alt="ícone de qualidade">
-                                        </div>
-                                        <h3 class="box-title"><a href="room.html">Compromisso com a Qualidade</a></h3>
-                                        <p class="box-text">No Espaço 637, cada detalhe é importante. Garantimos a qualidade superior de nossas lâminas e a excelência em todos os nossos processos.</p>
-                                    </div>
-                                </div>
-                            </div>
-
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <p><strong>Cervejaria artesanal</strong> caseira evoluiu para estrutura profissional</p>
                         </div>
-                        <div class="slider-pagination style2" data-slider-id="#aboutroomSlider1"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <p><strong>Rancho americano</strong> com cavalos, piquetes e atmosfera rústica</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <p><strong>Espaço 637</strong> nasceu para receber grandes celebrações</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-xxl-4 mt-4 mt-xxl-0">
-                <div class="text-center">
-                    <a href="https://wa.me/@formatPhone($getSettings['cellphone'])" class="th-btn2 th-icon" target="_blank">ENTRE EM CONTATO</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<section class="offer-area5 position-relative overflow-hidden space-bottom overflow-hidden" id="offer-sec">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 text-center">
-                <div class="title-area">
-                    <span class="sub-title2">LÂMINAS</span>
-                    <h2 class="sec-title text-white">Naturais</h2>
-                </div>
-            </div>
-        </div>
-        <div class="slider-area">
-            <div class="laminas-container">
-                <div class="laminas-scroll">
-                    @forelse($products as $product)
-                    <a href="{{ route('site.product.detail', $product->slug) }}" class="lamina-item">
-                        <div class="lamina-img">
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->title }}">
+                    <div class="philosophy-points mt-4">
+                        @foreach($philosophyPoints as $point)
+                        <div class="philosophy-item">
+                            <div class="philosophy-icon">
+                                <i class="{{ $point->icon }}"></i>
+                            </div>
+                            <div class="philosophy-content">
+                                <h4>{{ $point->title }}</h4>
+                                <p>{{ $point->description }}</p>
+                            </div>
                         </div>
-                        <div class="lamina-title">
-                            <h3>{{ $product->title }}</h3>
-                        </div>
-                    </a>
-                    @empty
-                    <p>Nenhum produto disponível no momento.</p>
-                    @endforelse
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-
-<section class="overflow-hidden space-bottom overflow-hidden" id="service-sec">
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
     <div class="container">
-        <div class="row gy-60">
-            <div class="col-12 service-card-wrap">
-                <div class="service-card style3">
-                    <div class="box-img">
-                        <img src="{{ asset('/storage/services/image_970-450.webp?1') }}" alt="Serviço de Prensagem">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="contact-content">
+                    <h2 class="section-title">Entre em Contato</h2>
+                    <p class="contact-subtitle">Venha conhecer nosso espaço e descubra como podemos tornar seu evento inesquecível</p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Endereço</h4>
+                                <p>{{ $getSettings['address'] ?? 'Espaço 637 - Zona Rural' }}</p>
+                            </div>
+                        </div>
+                        @if(isset($getSettings['cellphone']) && $getSettings['cellphone'] != '')
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Telefone</h4>
+                                <p>{{ $getSettings['cellphone'] ?? '(11) 99999-9999' }}</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>{{ $getSettings['site_email'] ?? 'contato@espaco637.com.br' }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="box-content">
-                        <h6 class="box-subtitle">Alta Precisão e Produtividade</h6>
-                        <h3 class="box-title"><a href="service-details.html">Prensagem Térmica Profissional</a></h3>
-                        <p class="box-text">Com mais de 30 anos de experiência com lâminas naturais e compostas, nossa empresa oferece um serviço de prensagem térmica altamente técnico e confiável, desenvolvido para atender as exigências da marcenaria profissional.</p>
-                        <a href="{{ route('site.services') }}" class="th-btn2 style2 th-icon">SAIBA MAIS</a>
+
+                    <div class="contact-cta">
+                        @if(isset($getSettings['cellphone']) && $getSettings['cellphone'] != '')
+                        <a class="btn btn-primary btn-lg" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $getSettings['cellphone']) }}" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            Agendar Visita
+                        </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="faq-section">
+                    <h3>Perguntas Frequentes</h3>
+                    <div class="faq-list">
+                        @foreach($faqs as $faq)
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>{{ $faq->question }}</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>{{ $faq->answer }}</p>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -193,206 +375,257 @@
 @section('pageJS')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const laminasScroll = document.querySelector('.laminas-scroll');
+        // Hero Carousel
+        const slides = document.querySelectorAll('.hero-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        const prevBtn = document.getElementById('prevSlide');
+        const nextBtn = document.getElementById('nextSlide');
+        let currentSlide = 0;
 
-        if (!laminasScroll) return;
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
 
-        // Variáveis para controle de touch/drag
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        let hasScrolled = false;
-
-        // Configurar eventos de mouse para desktop (drag to scroll)
-        laminasScroll.addEventListener('mousedown', (e) => {
-            // Não iniciar drag se clicou em um item
-            if (e.target.closest('.lamina-item')) {
-                return;
-            }
-
-            isDown = true;
-            hasScrolled = false;
-            laminasScroll.style.cursor = 'grabbing';
-            startX = e.pageX - laminasScroll.offsetLeft;
-            scrollLeft = laminasScroll.scrollLeft;
-
-            // Prevenir seleção de texto
-            e.preventDefault();
-        });
-
-        laminasScroll.addEventListener('mouseleave', () => {
-            isDown = false;
-            laminasScroll.style.cursor = 'default';
-            laminasScroll.classList.remove('is-dragging');
-        });
-
-        laminasScroll.addEventListener('mouseup', () => {
-            isDown = false;
-            laminasScroll.style.cursor = 'default';
-
-            // Remover classe is-dragging após um pequeno delay
-            setTimeout(() => {
-                laminasScroll.classList.remove('is-dragging');
-            }, 100);
-        });
-
-        laminasScroll.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-
-            e.preventDefault();
-            const x = e.pageX - laminasScroll.offsetLeft;
-            const walk = (x - startX) * 1.5; // Velocidade do scroll reduzida
-
-            // Só considerar como scroll se moveu significativamente
-            if (Math.abs(walk) > 5) {
-                hasScrolled = true;
-                laminasScroll.classList.add('is-dragging');
-                laminasScroll.scrollLeft = scrollLeft - walk;
-            }
-        });
-
-        // Configurar cursor para indicar que é arrastável apenas nos espaços vazios
-        laminasScroll.style.cursor = 'default';
-
-        // Navegação por teclado (setas esquerda/direita)
-        laminasScroll.addEventListener('keydown', (e) => {
-            const itemWidth = laminasScroll.querySelector('.lamina-item').offsetWidth + 20; // width + gap
-
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                laminasScroll.scrollBy({
-                    left: -itemWidth,
-                    behavior: 'smooth'
-                });
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                laminasScroll.scrollBy({
-                    left: itemWidth,
-                    behavior: 'smooth'
-                });
-            }
-        });
-
-        // Tornar focusável para navegação por teclado
-        laminasScroll.setAttribute('tabindex', '0');
-
-        // Configurar eventos de touch para mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        laminasScroll.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-        }, {
-            passive: true
-        });
-
-        laminasScroll.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].clientX;
-            handleSwipe();
-        }, {
-            passive: true
-        });
-
-        function handleSwipe() {
-            const swipeThreshold = 50; // Distância mínima para considerar swipe
-            const difference = touchStartX - touchEndX;
-
-            if (Math.abs(difference) > swipeThreshold) {
-                const itemWidth = laminasScroll.querySelector('.lamina-item').offsetWidth + 20;
-
-                if (difference > 0) {
-                    // Swipe para esquerda (próximo)
-                    laminasScroll.scrollBy({
-                        left: itemWidth,
-                        behavior: 'smooth'
-                    });
-                } else {
-                    // Swipe para direita (anterior)
-                    laminasScroll.scrollBy({
-                        left: -itemWidth,
-                        behavior: 'smooth'
-                    });
-                }
-            }
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
         }
 
-        // Adicionar indicadores de início/fim do scroll (opcional)
-        function updateScrollIndicators() {
-            const container = document.querySelector('.laminas-container');
-            const scrollWidth = laminasScroll.scrollWidth;
-            const clientWidth = laminasScroll.clientWidth;
-            const scrollLeft = laminasScroll.scrollLeft;
-
-            // Remover classes existentes
-            container.classList.remove('scroll-start', 'scroll-end', 'scroll-middle');
-
-            if (scrollLeft <= 0) {
-                container.classList.add('scroll-start');
-            } else if (scrollLeft >= scrollWidth - clientWidth - 1) {
-                container.classList.add('scroll-end');
-            } else {
-                container.classList.add('scroll-middle');
-            }
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
         }
 
-        // Atualizar indicadores no scroll
-        laminasScroll.addEventListener('scroll', updateScrollIndicators);
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
 
-        // Inicializar indicadores
-        updateScrollIndicators();
+        // Auto advance slides apenas se houver mais de 1 slide
+        if (slides.length > 1) {
+            setInterval(nextSlide, 5000);
+        }
 
-        // Redimensionar handler para recalcular indicadores
-        window.addEventListener('resize', () => {
-            setTimeout(updateScrollIndicators, 100);
+        // Manual controls
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+        // Indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
         });
 
-        // Adicionar efeito de foco para acessibilidade
-        const laminaItems = document.querySelectorAll('.lamina-item');
-
-        laminaItems.forEach((item, index) => {
-            item.setAttribute('tabindex', '0');
-            item.setAttribute('role', 'button');
-            item.setAttribute('aria-label', `Lâmina ${item.querySelector('h3').textContent}`);
-
-            // Scroll para o item quando focado via teclado
-            item.addEventListener('focus', () => {
-                const itemRect = item.getBoundingClientRect();
-                const containerRect = laminasScroll.getBoundingClientRect();
-
-                if (itemRect.left < containerRect.left || itemRect.right > containerRect.right) {
-                    item.scrollIntoView({
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
                         behavior: 'smooth',
-                        block: 'nearest',
-                        inline: 'center'
+                        block: 'start'
                     });
                 }
             });
+        });
 
-            // Ação no Enter/Space
-            item.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    item.click();
+        // Animate stats on scroll
+        const statsSection = document.querySelector('.stats-section');
+        const statNumbers = document.querySelectorAll('.stat-number');
+
+        function animateStats() {
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-count'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.floor(current);
+                }, 16);
+            });
+        }
+
+        // Intersection Observer for stats animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.unobserve(entry.target);
                 }
             });
+        });
 
-            // Melhorar gestão de eventos de hover
-            let hoverTimeout;
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
 
-            item.addEventListener('mouseenter', () => {
-                clearTimeout(hoverTimeout);
-                if (!isDown) {
-                    item.style.pointerEvents = 'auto';
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const answer = faqItem.querySelector('.faq-answer');
+                const icon = question.querySelector('i');
+
+                // Close other FAQs
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                        item.querySelector('.faq-answer').style.maxHeight = '0';
+                        item.querySelector('.faq-question i').classList.remove('fa-chevron-up');
+                        item.querySelector('.faq-question i').classList.add('fa-chevron-down');
+                    }
+                });
+
+                // Toggle current FAQ
+                faqItem.classList.toggle('active');
+                if (faqItem.classList.contains('active')) {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    answer.style.maxHeight = '0';
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
                 }
             });
+        });
 
-            item.addEventListener('mouseleave', () => {
-                clearTimeout(hoverTimeout);
-                hoverTimeout = setTimeout(() => {
-                    item.style.pointerEvents = 'auto';
-                }, 100);
-            });
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
     });
 </script>
+
+<style>
+    /* Estilos para o conteúdo dos sliders */
+    .hero-slide-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        z-index: 10;
+        width: 90%;
+        max-width: 600px;
+    }
+
+    .hero-slide-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-slide-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 3rem;
+        opacity: 0.9;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-slide-content .btn,
+    .hero-slide-buttons .btn {
+        font-size: 1.1rem;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+    }
+
+    .hero-slide-content .btn:hover,
+    .hero-slide-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-slide-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    /* Estilos para os botões dos portfólios */
+    .btn-theme {
+        background: var(--ranch-green);
+        border-color: var(--ranch-green);
+        color: white;
+        font-weight: 500;
+        transition: var(--transition-smooth);
+    }
+
+    .btn-theme:hover {
+        background: var(--ranch-green-light);
+        border-color: var(--ranch-green-light);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-glow);
+    }
+
+
+    /* Responsividade para o conteúdo dos sliders */
+    @media (max-width: 768px) {
+        .hero-slide-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-slide-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .hero-slide-content .btn,
+        .hero-slide-buttons .btn {
+            font-size: 1rem;
+            padding: 10px 25px;
+        }
+
+        .hero-slide-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+    }
+
+    @media (max-width: 576px) {
+        .hero-slide-title {
+            font-size: 2rem;
+        }
+
+        .hero-slide-subtitle {
+            font-size: 1rem;
+        }
+
+        .hero-slide-content .btn,
+        .hero-slide-buttons .btn {
+            font-size: 0.9rem;
+            padding: 8px 20px;
+        }
+
+        .hero-slide-buttons {
+            gap: 10px;
+        }
+    }
+</style>
 @endsection

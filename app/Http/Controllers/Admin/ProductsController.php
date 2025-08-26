@@ -48,7 +48,11 @@ class ProductsController extends Controller
         }
 
         if (!empty($filters['category_id'])) {
-            $query['category_id'] = $filters['category_id'];
+            if ($filters['category_id'] === 'null') {
+                $query['category_id'] = null;
+            } else {
+                $query['category_id'] = $filters['category_id'];
+            }
         }
 
         if (!empty($filters['date_range'])) {
@@ -79,7 +83,7 @@ class ProductsController extends Controller
         $result = $request->all();
 
         $rules = array(
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => 'required|unique:products,slug',
             'description' => 'nullable',
@@ -89,7 +93,7 @@ class ProductsController extends Controller
             'status' => 'required|exists:statuses,id',
         );
         $messages = array(
-            'category_id.required' => 'categoria é obrigatória',
+            'category_id.nullable' => 'categoria é opcional',
             'category_id.exists' => 'categoria selecionada não existe',
             'title.required' => 'título do produto é obrigatório',
             'slug.required' => 'url amigável é obrigatório',
@@ -133,7 +137,7 @@ class ProductsController extends Controller
         $result = $request->all();
 
         $rules = array(
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'title' => 'required|string|max:255',
             'slug' => "required|unique:products,slug,$id,id",
             'description' => 'nullable',
@@ -143,7 +147,7 @@ class ProductsController extends Controller
             'status' => 'required|exists:statuses,id',
         );
         $messages = array(
-            'category_id.required' => 'categoria é obrigatória',
+            'category_id.nullable' => 'categoria é opcional',
             'category_id.exists' => 'categoria selecionada não existe',
             'title.required' => 'título do produto é obrigatório',
             'slug.required' => 'url amigável é obrigatório',

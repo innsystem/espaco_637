@@ -95,6 +95,7 @@ class PermissionsController extends Controller
         $keys = $request->input('key');
         $errors = [];
         $created = 0;
+        $updated = 0;
 
         if (!is_array($titles) || !is_array($keys) || count($titles) !== count($keys)) {
             return response()->json('Dados inválidos para cadastro em lote.', 422);
@@ -102,36 +103,76 @@ class PermissionsController extends Controller
 
         foreach ($titles as $i => $title) {
             $key = $keys[$i];
-            $data = [
-                'title' => trim($title),
-                'key' => trim($key),
-                'type' => 'general',
-            ];
-            $validator = Validator::make($data, [
-                'title' => 'required|unique:permissions,title',
-                'key' => 'required|unique:permissions,key',
-            ], [
-                'title.required' => 'Título é obrigatório',
-                'title.unique' => 'Título já existe',
-                'key.required' => 'Rota é obrigatória',
-                'key.unique' => 'Rota já existe',
-            ]);
-            if ($validator->fails()) {
-                $errors[] = "{$data['title']} ({$data['key']}): " . $validator->errors()->first();
+            $title = trim($title);
+            $key = trim($key);
+            
+            if (empty($title) || empty($key)) {
+                $errors[] = "Título e rota são obrigatórios para todos os itens.";
                 continue;
             }
-            $this->permissionService->createPermission($data);
-            $created++;
+
+            // Verificar se a permissão já existe
+            $existingPermission = Permission::where('key', $key)->first();
+            
+            if ($existingPermission) {
+                // Atualizar permissão existente
+                try {
+                    $existingPermission->update([
+                        'title' => $title,
+                        'type' => 'general',
+                    ]);
+                    $updated++;
+                } catch (\Exception $e) {
+                    $errors[] = "Erro ao atualizar {$title} ({$key}): " . $e->getMessage();
+                }
+            } else {
+                // Criar nova permissão
+                $data = [
+                    'title' => $title,
+                    'key' => $key,
+                    'type' => 'general',
+                ];
+                
+                $validator = Validator::make($data, [
+                    'title' => 'required|unique:permissions,title',
+                    'key' => 'required|unique:permissions,key',
+                ], [
+                    'title.required' => 'Título é obrigatório',
+                    'title.unique' => 'Título já existe',
+                    'key.required' => 'Rota é obrigatória',
+                    'key.unique' => 'Rota já existe',
+                ]);
+                
+                if ($validator->fails()) {
+                    $errors[] = "{$title} ({$key}): " . $validator->errors()->first();
+                    continue;
+                }
+                
+                try {
+                    $this->permissionService->createPermission($data);
+                    $created++;
+                } catch (\Exception $e) {
+                    $errors[] = "Erro ao criar {$title} ({$key}): " . $e->getMessage();
+                }
+            }
         }
 
+        $message = '';
         if ($created > 0) {
-            $msg = "$created permissões adicionadas com sucesso.";
-            if (count($errors)) {
-                $msg .= ' Alguns itens não foram criados: ' . implode(' | ', $errors);
-            }
-            return response()->json($msg, 200);
+            $message .= "$created permissões criadas com sucesso. ";
+        }
+        if ($updated > 0) {
+            $message .= "$updated permissões atualizadas com sucesso. ";
+        }
+        
+        if (count($errors) > 0) {
+            $message .= ' Alguns itens não foram processados: ' . implode(' | ', $errors);
+        }
+        
+        if ($created > 0 || $updated > 0) {
+            return response()->json($message, 200);
         } else {
-            return response()->json('Nenhuma permissão foi criada. ' . implode(' | ', $errors), 422);
+            return response()->json('Nenhuma permissão foi processada. ' . implode(' | ', $errors), 422);
         }
     }
 
@@ -182,6 +223,21 @@ class PermissionsController extends Controller
         $permission = $this->permissionService->updatePermission($id, $result);
 
         return response()->json($this->name . ' atualizado com sucesso', 200);
+    }
+
+    public function checkExistingPermissions(Request $request)
+    {
+        $keys = $request->input('keys', []);
+        $existingPermissions = [];
+        
+        if (is_array($keys)) {
+            $existingPermissions = Permission::whereIn('key', $keys)
+                ->get(['id', 'title', 'key', 'type'])
+                ->keyBy('key')
+                ->toArray();
+        }
+        
+        return response()->json($existingPermissions);
     }
 
     public function delete($id)

@@ -311,32 +311,136 @@
     });
 </script>
 
-<script>
-    $(document).on('click', '#add-permission-row', function() {
-        let row = $(
-            `<div class=\"row mb-2 permission-row\">
-            <div class=\"col-5\">
-                <select name=\"key[]\" class=\"form-select\">
-                    @foreach($routes as $route)
-                    <option value=\"{{$route['uri']}}\">{{$route['uri']}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class=\"col-5\">
-                <input type=\"text\" class=\"form-control\" name=\"title[]\" placeholder=\"Digite o título\">
-            </div>
-            <div class=\"col-2 d-flex align-items-center\">
-                <button type=\"button\" class=\"btn btn-danger btn-sm remove-permission-row\" title=\"Remover\"><i class=\"fa fa-trash\"></i></button>
-            </div>
-        </div>`
-        );
-        $('#permissions-rows').append(row);
-    });
 
-    $(document).on('click', '.remove-permission-row', function() {
-        if ($('.permission-row').length > 1) {
-            $(this).closest('.permission-row').remove();
+
+<script>
+// Scripts específicos do formulário de permissões
+$(document).ready(function() {
+    // Função para inicializar os scripts do formulário quando ele for carregado
+    initPermissionsFormScripts();
+});
+
+function initPermissionsFormScripts() {
+    // Aguardar um pouco para garantir que o DOM do modal foi carregado
+    setTimeout(function() {
+        const routesSelect = document.getElementById('routes-select');
+        const permissionsRows = document.getElementById('permissions-rows');
+        const generateBtn = document.getElementById('generate-permissions');
+        
+        if (!routesSelect || !permissionsRows || !generateBtn) {
+            return; // Elementos não encontrados, sair da função
         }
-    });
+        
+        // Gerar linhas de permissões baseado nas rotas selecionadas
+        generateBtn.addEventListener('click', function() {
+            const selectedOptions = Array.from(routesSelect.selectedOptions);
+            
+            if (selectedOptions.length === 0) {
+                alert('Selecione pelo menos uma rota para gerar permissões.');
+                return;
+            }
+            
+            const selectedKeys = selectedOptions.map(option => option.value);
+            
+            // Verificar permissões existentes
+            $.ajax({
+                url: '{{ route("admin.permissions.check-existing") }}',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: JSON.stringify({ keys: selectedKeys }),
+                success: function(existingPermissions) {
+                    generatePermissionRows(selectedOptions, existingPermissions);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao verificar permissões existentes:', error);
+                    generatePermissionRows(selectedOptions, {});
+                }
+            });
+        });
+        
+        function generatePermissionRows(selectedOptions, existingPermissions) {
+            permissionsRows.innerHTML = '';
+            
+            selectedOptions.forEach(function(option) {
+                const routeUri = option.value;
+                const routeName = option.dataset.name;
+                const existingPermission = existingPermissions[routeUri];
+                
+                const row = document.createElement('div');
+                row.className = 'row mb-2 permission-row';
+                
+                let titleValue = routeName;
+                let statusBadge = '';
+                let readonlyClass = '';
+                
+                if (existingPermission) {
+                    titleValue = existingPermission.title;
+                    statusBadge = `<span class="badge bg-info ms-2">Existente</span>`;
+                    readonlyClass = 'bg-light';
+                }
+                
+                row.innerHTML = `
+                    <div class="col-5">
+                        <input type="text" class="form-control ${readonlyClass}" name="key[]" value="${routeUri}" readonly>
+                    </div>
+                    <div class="col-5">
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control" name="title[]" placeholder="Digite o título" value="${titleValue}">
+                            ${statusBadge}
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex align-items-center">
+                        <button type="button" class="btn btn-danger btn-sm remove-permission-row" title="Remover"><i class="fa fa-trash"></i></button>
+                    </div>
+                `;
+                
+                permissionsRows.appendChild(row);
+            });
+            
+            // Adicionar event listeners para botões de remoção
+            $(document).off('click', '.remove-permission-row').on('click', '.remove-permission-row', function() {
+                $(this).closest('.permission-row').remove();
+            });
+        }
+        
+        // Limpar seleção quando o modal for fechado
+        $('[data-bs-dismiss="offcanvas"]').off('click').on('click', function() {
+            routesSelect.selectedIndex = -1;
+            permissionsRows.innerHTML = '';
+        });
+        
+        // Adicionar funcionalidade de busca no select (apenas se não existir)
+        if (!document.querySelector('#routes-search-input')) {
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.id = 'routes-search-input';
+            searchInput.className = 'form-control mb-2';
+            searchInput.placeholder = 'Buscar rotas...';
+            routesSelect.parentNode.insertBefore(searchInput, routesSelect);
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const options = routesSelect.querySelectorAll('option');
+                
+                options.forEach(option => {
+                    const text = option.text.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                });
+            });
+        }
+    }, 100);
+}
+
+// Reinicializar scripts quando o modal for aberto
+$(document).on('shown.bs.offcanvas', '#modalPermissions', function() {
+    initPermissionsFormScripts();
+});
 </script>
 @endsection

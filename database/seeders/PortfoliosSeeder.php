@@ -15,6 +15,5 @@ class PortfoliosSeeder extends Seeder
     {
         \DB::table('portfolios')->delete();
         
-        Portfolio::factory()->count(10)->create();
     }
 }

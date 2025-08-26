@@ -15,6 +15,5 @@ class ServicesSeeder extends Seeder
     {
         \DB::table('services')->delete();
         
-        Service::factory()->count(10)->create();
     }
 }

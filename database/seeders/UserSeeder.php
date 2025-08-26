@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             'user_group_id' => 1, // Developer
-            'name' => 'LeoDev',
+            'name' => 'Desenvolvedor',
             'email' => 'developer@innsystem.com.br',
             'password' => Hash::make('123456'),
             'password_code' => null,
@@ -30,24 +30,12 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             'user_group_id' => 2, // Admin
-            'name' => 'Leo Admin',
-            'email' => 'contato@innsystem.com.br',
+            'name' => 'Administrador',
+            'email' => 'contato@espaco637.com.br',
             'password' => Hash::make('123456'),
             'password_code' => null,
             'document' => null,
             'phone' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        DB::table('users')->insert([
-            'user_group_id' => 3, // Customer
-            'name' => 'Leo Cliente',
-            'email' => 'leozinnn.ecko@gmail.com',
-            'password' => Hash::make('123456'),
-            'password_code' => null,
-            'document' => '415.524.658-96',
-            'phone' => '55 16 992747526',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

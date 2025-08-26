@@ -21,9 +21,10 @@ Route::controller(SiteController::class)->group(function () {
     Route::get('/categorias', 'categoriesIndex')->name('site.categories.index');
     Route::get('/produtos/{slug}', 'productsByCategory')->name('site.products.category');
     Route::get('/produto/{slug}', 'productDetail')->name('site.product.detail');
-    Route::get('/sobre', 'about')->name('site.about');
-    Route::get('/servicos', 'services')->name('site.services');
-    Route::get('/sustentabilidade', 'sustainability')->name('site.sustainability');
+    // Rotas removidas - conteúdo movido para home
+    // Route::get('/sobre', 'about')->name('site.about');
+    // Route::get('/servicos', 'services')->name('site.services');
+    // Route::get('/contato', 'contact')->name('site.contact');
 });
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
@@ -67,6 +68,10 @@ use App\Http\Controllers\Admin\IntegrationCategoriesController;
 use App\Http\Controllers\Admin\IntegrationsPlaygroundController;
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\PhilosophyPointsController;
+use App\Http\Controllers\Admin\ServiceFeaturesController;
+use App\Http\Controllers\Admin\FaqsController;
 
 // Group Admin
 Route::prefix('admin')->group(function () {
@@ -109,6 +114,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/load', 'load')->name('admin.permissions.load')->middleware('permission:admin.permissions.load');
             Route::get('/create', 'create')->name('admin.permissions.create')->middleware('permission:admin.permissions.create');
             Route::post('/store', 'store')->name('admin.permissions.store')->middleware('permission:admin.permissions.store');
+            Route::post('/check-existing', 'checkExistingPermissions')->name('admin.permissions.check-existing')->middleware('permission:admin.permissions.create');
             Route::get('/{id}/edit', 'edit')->name('admin.permissions.edit')->middleware('permission:admin.permissions.edit');
             Route::post('/{id}/update', 'update')->name('admin.permissions.update')->middleware('permission:admin.permissions.update');
             Route::post('/{id}/delete', 'delete')->name('admin.permissions.delete')->middleware('permission:admin.permissions.delete');
@@ -292,6 +298,52 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/delete', 'delete')->name('admin.products.delete')->middleware('permission:admin.products.delete');
             Route::post('/upload-image', 'uploadImage')->name('admin.products.uploadImage')->middleware('permission:admin.products.store');
         });
+
+        // Statistics
+        Route::prefix('statistics')->controller(StatisticsController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.statistics.index')->middleware('permission:admin.statistics.index');
+            Route::get('/load', 'load')->name('admin.statistics.load')->middleware('permission:admin.statistics.load');
+            Route::get('/create', 'create')->name('admin.statistics.create')->middleware('permission:admin.statistics.create');
+            Route::post('/store', 'store')->name('admin.statistics.store')->middleware('permission:admin.statistics.store');
+            Route::get('/{id}/edit', 'edit')->name('admin.statistics.edit')->middleware('permission:admin.statistics.edit');
+            Route::post('/{id}/update', 'update')->name('admin.statistics.update')->middleware('permission:admin.statistics.update');
+            Route::post('/{id}/delete', 'delete')->name('admin.statistics.delete')->middleware('permission:admin.statistics.delete');
+        });
+
+        // Philosophy Points
+        Route::prefix('philosophy-points')->controller(PhilosophyPointsController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.philosophy_points.index')->middleware('permission:admin.philosophy_points.index');
+            Route::get('/load', 'load')->name('admin.philosophy_points.load')->middleware('permission:admin.philosophy_points.load');
+            Route::get('/create', 'create')->name('admin.philosophy_points.create')->middleware('permission:admin.philosophy_points.create');
+            Route::post('/store', 'store')->name('admin.philosophy_points.store')->middleware('permission:admin.philosophy_points.store');
+            Route::get('/{id}/edit', 'edit')->name('admin.philosophy_points.edit')->middleware('permission:admin.philosophy_points.edit');
+            Route::post('/{id}/update', 'update')->name('admin.philosophy_points.update')->middleware('permission:admin.philosophy_points.update');
+            Route::post('/{id}/delete', 'delete')->name('admin.philosophy_points.delete')->middleware('permission:admin.philosophy_points.delete');
+        });
+
+        // Service Features
+        Route::prefix('service-features')->controller(ServiceFeaturesController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.service_features.index')->middleware('permission:admin.service_features.index');
+            Route::get('/load', 'load')->name('admin.service_features.load')->middleware('permission:admin.service_features.load');
+            Route::get('/create', 'create')->name('admin.service_features.create')->middleware('permission:admin.service_features.create');
+            Route::post('/store', 'store')->name('admin.service_features.store')->middleware('permission:admin.service_features.store');
+            Route::get('/{id}/edit', 'edit')->name('admin.service_features.edit')->middleware('permission:admin.service_features.edit');
+            Route::post('/{id}/update', 'update')->name('admin.service_features.update')->middleware('permission:admin.service_features.update');
+            Route::post('/{id}/delete', 'delete')->name('admin.service_features.delete')->middleware('permission:admin.service_features.delete');
+        });
+
+        // FAQs
+        Route::prefix('faqs')->controller(FaqsController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.faqs.index')->middleware('permission:admin.faqs.index');
+            Route::get('/load', 'load')->name('admin.faqs.load')->middleware('permission:admin.faqs.load');
+            Route::get('/create', 'create')->name('admin.faqs.create')->middleware('permission:admin.faqs.create');
+            Route::post('/store', 'store')->name('admin.faqs.store')->middleware('permission:admin.faqs.store');
+            Route::get('/{id}/edit', 'edit')->name('admin.faqs.edit')->middleware('permission:admin.faqs.edit');
+            Route::post('/{id}/update', 'update')->name('admin.faqs.update')->middleware('permission:admin.faqs.update');
+            Route::post('/{id}/delete', 'delete')->name('admin.faqs.delete')->middleware('permission:admin.faqs.delete');
+        });
+
+
 
         // Import Tool
         Route::prefix('import')->controller(ImportController::class)->group(function () {
