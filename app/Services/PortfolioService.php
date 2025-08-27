@@ -108,11 +108,29 @@ class PortfolioService
 
 	public function reorderImages($portfolioId, $imageOrders)
 	{
-		foreach ($imageOrders as $order => $imageId) {
-			PortfolioImage::where('id', $imageId)
-				->where('portfolio_id', $portfolioId)
-				->update(['sort_order' => $order]);
+		// Validate that all images belong to the portfolio
+		$portfolioImages = PortfolioImage::where('portfolio_id', $portfolioId)
+			->whereIn('id', $imageOrders)
+			->pluck('id')
+			->toArray();
+		
+		if (count($portfolioImages) !== count($imageOrders)) {
+			return false;
 		}
+		
+		// Use a transaction to ensure data consistency
+		\DB::transaction(function() use ($portfolioId, $imageOrders) {
+			// Update sort_order for each image using DB facade for direct SQL
+			foreach ($imageOrders as $order => $imageId) {
+				\DB::table('portfolio_images')
+					->where('id', $imageId)
+					->where('portfolio_id', $portfolioId)
+					->update(['sort_order' => $order]);
+			}
+		});
+		
+		// Clear any cache and return true
+		\Cache::forget("portfolio_{$portfolioId}_images");
 		return true;
 	}
 

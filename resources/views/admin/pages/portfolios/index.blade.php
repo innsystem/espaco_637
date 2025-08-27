@@ -106,6 +106,42 @@
 
 <!-- Cropper.js CSS -->
 <link href="{{ asset('/plugins/croppperjs/cropper.min.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- Sortable.js CSS -->
+<style>
+.portfolio-image-item {
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.portfolio-image-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.portfolio-image-item.sortable-ghost {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.portfolio-image-item.sortable-chosen {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.portfolio-image-item.sortable-drag {
+    opacity: 0.8;
+}
+
+.sortable-handle {
+    cursor: move;
+}
+
+.sortable-handle:hover {
+    background-color: #f8f9fa;
+}
+</style>
 @endsection
 
 @section('pageJS')
@@ -122,6 +158,9 @@
 
 <!-- Cropper.js JS -->
 <script src="{{ asset('/plugins/croppperjs/cropper.min.js') }}"></script>
+
+<!-- Sortable.js -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -904,6 +943,100 @@
     // Initialize when document is ready
     $(document).ready(function() {
         initializePortfolioImageCropping();
+        initializePortfolioImageSortable();
+    });
+
+    // Initialize Sortable for portfolio images
+    function initializePortfolioImageSortable() {
+        const container = document.getElementById('portfolio-images-container');
+        if (!container) return;
+
+        new Sortable(container, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            handle: '.portfolio-image-item',
+            onEnd: function(evt) {
+                updatePortfolioImageOrder();
+            }
+        });
+    }
+
+    // Update portfolio image order after drag and drop
+    function updatePortfolioImageOrder() {
+        const container = document.getElementById('portfolio-images-container');
+        if (!container) return;
+
+        const imageItems = container.querySelectorAll('.portfolio-image-item');
+        const imageOrders = [];
+
+        imageItems.forEach((item, index) => {
+            const imageId = item.getAttribute('data-id');
+            if (imageId) {
+                imageOrders.push(imageId);
+                
+                // Update the order number display
+                const orderBadge = item.querySelector('.position-absolute');
+                if (orderBadge) {
+                    orderBadge.textContent = index + 1;
+                }
+                
+                // Update data-sort-order attribute
+                item.setAttribute('data-sort-order', index);
+            }
+        });
+
+        // Get portfolio ID
+        const portfolioId = $('#form-request-portfolios').data('portfolio-id');
+        if (!portfolioId) {
+            console.error('Portfolio ID not found');
+            return;
+        }
+
+        // Send AJAX request to update order
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+
+        $.ajax({
+            url: `{{ url('/admin/portfolios/${portfolioId}/reorder-images') }}`,
+            method: 'POST',
+            data: {
+                image_orders: imageOrders
+            },
+            success: function(response) {
+                // Show success message
+                Swal.fire({
+                    text: 'Ordem das imagens atualizada com sucesso!',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
+                });
+            },
+            error: function(xhr) {
+                console.error('Erro ao atualizar ordem das imagens:', xhr);
+                Swal.fire({
+                    text: 'Erro ao atualizar ordem das imagens',
+                    icon: 'error',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
+                });
+            }
+        });
+    }
+
+    // Re-initialize sortable when form is loaded (for edit mode)
+    $(document).on('shown.bs.offcanvas', '#modalPortfolios', function() {
+        setTimeout(function() {
+            initializePortfolioImageSortable();
+        }, 500);
     });
 </script>
 @endsection

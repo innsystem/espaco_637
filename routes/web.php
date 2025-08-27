@@ -192,6 +192,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/delete', 'delete')->name('admin.portfolios.delete')->middleware('permission:admin.portfolios.delete');
             Route::post('/{id}/delete-image', 'deleteImage')->name('admin.portfolios.delete.image')->middleware('permission:admin.portfolios.delete.image');
             Route::post('/{id}/define-image-thumb', 'defineImageThumb')->name('admin.portfolios.define.image')->middleware('permission:admin.portfolios.define.image');
+            Route::post('/{id}/reorder-images', 'reorderImages')->name('admin.portfolios.reorder.images')->middleware('permission:admin.portfolios.edit');
             Route::post('/upload-image', 'uploadImage')->name('admin.portfolios.uploadImage')->middleware('permission:admin.portfolios.store');
         });
 

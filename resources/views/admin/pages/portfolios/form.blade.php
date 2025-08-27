@@ -12,18 +12,25 @@
             </div>
             <hr>
             @if(isset($result->images))
-                @foreach($result->images as $image)
-                <div id="row_portfolio_image_{{$image->id}}" class="border p-1 rounded mb-2" data-id="{{ $image->id }}" style="display: inline-block; margin-right: 10px; text-align: center;">
-                    <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagem" class="avatar-md border rounded" style="object-fit: cover; margin-bottom: 5px;">
-                    <br>
-                    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
-                        <label for="thumb_{{$image->id}}" class="cursor-pointer fs-7">
-                            <input type="radio" id="thumb_{{$image->id}}" name="thumb_portfolio" value="{{ $image->id }}" {{ $image->featured ? 'checked' : '' }} class="m-0 p-0 cursor-pointer"> Capa
-                        </label>
-                        <button type="button" class="btn btn-sm btn-danger fs-7 p-0 px-1 button-portfolio-images-delete" data-portfolio-image-id="{{ $image->id }}" data-portfolio-name="{{ isset($result->title) ? $result->title : '' }}">Remover</button>
+                <div class="mb-3">
+                    <label class="form-label">Imagens Existentes (Arraste para reordenar):</label>
+                    <div id="portfolio-images-container" class="d-flex flex-wrap gap-2">
+                        @foreach($result->images as $image)
+                        <div id="row_portfolio_image_{{$image->id}}" class="portfolio-image-item border p-2 rounded" data-id="{{ $image->id }}" data-sort-order="{{ $image->sort_order }}" style="cursor: move; min-width: 120px; text-align: center; background: white;">
+                            <div class="position-relative">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagem" class="avatar-md border rounded" style="object-fit: cover; margin-bottom: 5px;">
+                                <div class="position-absolute top-0 start-0 bg-primary text-white px-1 py-0 rounded" style="font-size: 10px;">{{ $image->sort_order + 1 }}</div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                                <label for="thumb_{{$image->id}}" class="cursor-pointer fs-7">
+                                    <input type="radio" id="thumb_{{$image->id}}" name="thumb_portfolio" value="{{ $image->id }}" {{ $image->featured ? 'checked' : '' }} class="m-0 p-0 cursor-pointer"> Capa
+                                </label>
+                                <button type="button" class="btn btn-sm btn-danger fs-7 p-0 px-1 button-portfolio-images-delete" data-portfolio-image-id="{{ $image->id }}" data-portfolio-name="{{ isset($result->title) ? $result->title : '' }}">Remover</button>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
-                @endforeach
             @endif
         </div>
 

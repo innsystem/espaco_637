@@ -1,4 +1,10 @@
 <li class="side-nav-title">Menu</li>
+<li class="side-nav-item">
+    <a href="{{ route('site.index') }}" class="side-nav-link">
+        <i class="ri-home-2-line"></i>
+        <span> Meu Site </span>
+    </a>
+</li>
 
 @if (auth()->user()->hasPermission('admin.index'))
 <li class="side-nav-item">
