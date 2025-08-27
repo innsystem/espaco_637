@@ -120,31 +120,31 @@
                     <li class="nav-item ms-lg-2">
                         <div class="navbar-social-links">
                             @if(isset($getSettings['facebook']) && $getSettings['facebook'] != '')
-                                <a href="https://facebook.com/{{ $getSettings['facebook'] }}" target="_blank" class="nav-social-link">
+                                <a href="https://facebook.com/{{ $getSettings['facebook'] }}" target="_blank" class="nav-social-link mt-1">
                                     <i class="fab fa-facebook"></i>
                                 </a>
                             @endif
                             
                             @if(isset($getSettings['instagram']) && $getSettings['instagram'] != '')
-                                <a href="https://instagram.com/{{ $getSettings['instagram'] }}" target="_blank" class="nav-social-link">
+                                <a href="https://instagram.com/{{ $getSettings['instagram'] }}" target="_blank" class="nav-social-link mt-1">
                                     <i class="fab fa-instagram"></i>
                                 </a>
                             @endif
                             
                             @if(isset($getSettings['youtube']) && $getSettings['youtube'] != '')
-                                <a href="https://youtube.com/{{ $getSettings['youtube'] }}" target="_blank" class="nav-social-link">
+                                <a href="https://youtube.com/{{ $getSettings['youtube'] }}" target="_blank" class="nav-social-link mt-1">
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             @endif
                             
                             @if(isset($getSettings['linkedin']) && $getSettings['linkedin'] != '')
-                                <a href="https://linkedin.com/in/{{ $getSettings['linkedin'] }}" target="_blank" class="nav-social-link">
+                                <a href="https://linkedin.com/in/{{ $getSettings['linkedin'] }}" target="_blank" class="nav-social-link mt-1">
                                     <i class="fab fa-linkedin"></i>
                                 </a>
                             @endif
                             
                             @if(isset($getSettings['twitter']) && $getSettings['twitter'] != '')
-                                <a href="https://twitter.com/{{ $getSettings['twitter'] }}" target="_blank" class="nav-social-link">
+                                <a href="https://twitter.com/{{ $getSettings['twitter'] }}" target="_blank" class="nav-social-link mt-1">
                                     <i class="fab fa-twitter"></i>
                                 </a>
                             @endif
