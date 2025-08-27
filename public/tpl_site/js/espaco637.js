@@ -358,44 +358,7 @@ $(document).ready(function() {
         `)
         .appendTo('head');
     
-    // Preloader (optional)
-    const preloader = $('<div class="preloader"><div class="spinner"></div></div>');
-    $('body').prepend(preloader);
-    
-    $(window).on('load', function() {
-        preloader.fadeOut(500);
-    });
-    
-    // Add CSS for preloader
-    $('<style>')
-        .prop('type', 'text/css')
-        .html(`
-            .preloader {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: var(--ranch-cream);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-            }
-            .spinner {
-                width: 50px;
-                height: 50px;
-                border: 3px solid var(--ranch-green);
-                border-top: 3px solid transparent;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `)
-        .appendTo('head');
+
     
     // Initialize tooltips (if Bootstrap tooltips are used)
     if (typeof bootstrap !== 'undefined') {

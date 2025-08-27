@@ -84,7 +84,7 @@
                     <div class="col-6 col-lg-3">
                         <a href="{{ asset('storage/' . $image->image_path) }}" data-lightbox="portfolio-{{ $categoryId }}" data-title="{{ $portfolio->title }}">
                             <div class="gallery-item">
-                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $portfolio->title }}" class="gallery-image">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $portfolio->title }}" class="gallery-image lazy-load">
                                 <div class="gallery-overlay">
                                     <i class="fas fa-search-plus"></i>
                                 </div>
@@ -134,7 +134,7 @@
         <div class="row mb-5">
             <div class="col-md-6">
                 <div class="service-header-image">
-                    <img src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image lazy-load">
                     <div class="service-image-overlay">
                         <h2 class="service-image-title">O que Oferecemos</h2>
                     </div>
@@ -142,7 +142,7 @@
             </div>
             <div class="col-md-6">
                 <div class="service-header-image">
-                    <img src="{{ asset('galerias/espaco637/04.jpg') }}" alt="Pavilhão à Noite" class="service-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/04.jpg') }}" alt="Pavilhão à Noite" class="service-image lazy-load">
                     <div class="service-image-overlay">
                         <div class="service-image-content">
                             <div class="service-image-subtitle">Estrutura</div>
@@ -192,7 +192,7 @@
             <div class="col-6 col-md-4 col-lg-3">
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('tpl_site/img/placeholder-beer.svg') }}" alt="{{ $product->title }}" class="product-img">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ $product->image ? asset('storage/' . $product->image) : asset('tpl_site/img/placeholder-beer.svg') }}" alt="{{ $product->title }}" class="product-img lazy-load">
                     </div>
                     <div class="product-info">
                         <h4 class="product-title">{{ $product->title }}</h4>
@@ -240,18 +240,18 @@
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="about-image-wrapper">
-                                <img src="{{ asset('galerias/espaco637/01.jpg') }}" alt="Exterior do Rancho" class="about-image">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/01.jpg') }}" alt="Exterior do Rancho" class="about-image lazy-load">
                             </div>
                             <div class="about-image-wrapper mt-4">
-                                <img src="{{ asset('galerias/espaco637/06.jpg') }}" alt="Exterior do Rancho" class="about-image">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/06.jpg') }}" alt="Exterior do Rancho" class="about-image lazy-load">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="about-image-wrapper mt-4">
-                                <img src="{{ asset('galerias/espaco637/05.jpg') }}" alt="Área do Bar" class="about-image">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/05.jpg') }}" alt="Área do Bar" class="about-image lazy-load">
                             </div>
                             <div class="about-image-wrapper mt-4">
-                                <img src="{{ asset('galerias/espaco637/02.jpg') }}" alt="Área do Bar" class="about-image">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/02.jpg') }}" alt="Área do Bar" class="about-image lazy-load">
                             </div>
                         </div>
                     </div>
@@ -510,6 +510,32 @@
                 navbar.classList.remove('scrolled');
             }
         });
+
+        // Lazy Loading para imagens
+        const images = document.querySelectorAll('img.lazy-load');
+
+        const observerImages = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.getAttribute('data-src'); // Define o src com o valor de data-src
+                    
+                    // Adiciona evento para quando a imagem carregar
+                    img.onload = function() {
+                        img.classList.remove('lazy-load');
+                        img.classList.add('loaded');
+                    };
+                    
+                    observerImages.unobserve(img); // Para de observar a imagem
+                }
+            });
+        }, {
+            threshold: 0.1 // A imagem será carregada quando 10% da sua área for visível
+        });
+
+        images.forEach(image => {
+            observerImages.observe(image); // Começa a observar as imagens
+        });
     });
 </script>
 
@@ -627,6 +653,37 @@
 
         .hero-slide-buttons {
             gap: 10px;
+        }
+    }
+
+    /* Estilos para Lazy Loading */
+    .lazy-load {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        background: #f8f9fa;
+        min-height: 200px;
+    }
+
+    .lazy-load.loaded {
+        opacity: 1;
+    }
+
+    /* Placeholder para imagens durante carregamento */
+    .gallery-image.lazy-load,
+    .service-image.lazy-load,
+    .product-img.lazy-load,
+    .about-image.lazy-load {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
         }
     }
 </style>

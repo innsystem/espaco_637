@@ -48,7 +48,7 @@
     <link href="{{ asset('plugins/bootstrap-5.3.5/css/bootstrap.min.css') }}" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('tpl_site/css/espaco637.css?2') }}">
+    <link rel="stylesheet" href="{{ asset('tpl_site/css/espaco637.css?3') }}">
     
     <!-- Animate.css -->
     <link rel="stylesheet" href="{{ asset('plugins/animate.min.css') }}">
@@ -221,7 +221,7 @@
     <script src="{{ asset('plugins/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('plugins/bootstrap-5.3.5/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('plugins/lightbox/js/lightbox.js') }}"></script>
-    <script src="{{ asset('tpl_site/js/espaco637.js?1'.rand()) }}"></script>
+    <script src="{{ asset('tpl_site/js/espaco637.js?3') }}"></script>
 
     @yield('pageJS')
 </body>
