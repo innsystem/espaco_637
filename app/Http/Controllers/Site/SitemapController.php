@@ -21,8 +21,6 @@ class SitemapController extends Controller
         $sitemap .= $this->addUrl(url('/'), Carbon::now(), 'daily', '1.0');
         
         // Páginas estáticas
-        $sitemap .= $this->addUrl(url('/site'), Carbon::now(), 'monthly', '0.8');
-        $sitemap .= $this->addUrl(url('/grupos'), Carbon::now(), 'monthly', '0.8');
         $sitemap .= $this->addUrl(url('/categorias'), Carbon::now(), 'weekly', '0.9');
 
         // Páginas dinâmicas
@@ -36,47 +34,14 @@ class SitemapController extends Controller
             );
         }
 
-        // Serviços
-        $services = Service::where('status', 'active')->get();
-        foreach ($services as $service) {
-            $sitemap .= $this->addUrl(
-                url('/services/' . $service->slug), 
-                $service->updated_at, 
-                'monthly', 
-                '0.8'
-            );
-        }
-
         // Portfólios
-        $portfolios = Portfolio::where('status', 'active')->get();
+        $portfolios = Portfolio::where('status', 1)->get();
         foreach ($portfolios as $portfolio) {
             $sitemap .= $this->addUrl(
                 url('/portfolios/' . $portfolio->slug), 
                 $portfolio->updated_at, 
                 'monthly', 
                 '0.7'
-            );
-        }
-
-        // Categorias de produtos
-        $categories = Category::where('status', 'active')->get();
-        foreach ($categories as $category) {
-            $sitemap .= $this->addUrl(
-                url('/produtos/' . $category->slug), 
-                $category->updated_at, 
-                'weekly', 
-                '0.8'
-            );
-        }
-
-        // Produtos individuais
-        $products = Product::where('status', 'active')->get();
-        foreach ($products as $product) {
-            $sitemap .= $this->addUrl(
-                url('/produto/' . $product->slug), 
-                $product->updated_at, 
-                'weekly', 
-                '0.6'
             );
         }
 
