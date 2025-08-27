@@ -4,8 +4,12 @@
             <label for="images" class="col-sm-12">Imagens:</label>
             <div class="col-sm-12">
                 <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                <small class="text-muted">Selecione múltiplas imagens. Cada uma poderá ser recortada individualmente.</small>
             </div>
-            <div id="preview-container" class="mt-2"></div>
+            <div id="preview-container" class="mt-3">
+                <div id="cropping-queue" class="row g-3"></div>
+                <div id="processed-images" class="row g-3 mt-3"></div>
+            </div>
             <hr>
             @if(isset($result->images))
                 @foreach($result->images as $image)

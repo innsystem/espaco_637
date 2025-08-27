@@ -12,6 +12,7 @@ use App\Models\PortfolioImage;
 use App\Models\Category;
 use Carbon\Carbon;
 use App\Services\PortfolioService;
+use App\Services\ImageOptimizationService;
 
 class PortfoliosController extends Controller
 {
@@ -19,10 +20,12 @@ class PortfoliosController extends Controller
     public $folder = 'admin.pages.portfolios';
 
     protected $portfolioService;
+    protected $imageOptimizationService;
 
-    public function __construct(PortfolioService $portfolioService)
+    public function __construct(PortfolioService $portfolioService, ImageOptimizationService $imageOptimizationService)
     {
         $this->portfolioService = $portfolioService;
+        $this->imageOptimizationService = $imageOptimizationService;
     }
 
     public function index()
@@ -102,7 +105,23 @@ class PortfoliosController extends Controller
         $portfolio = $this->portfolioService->createPortfolio($result);
 
         if (isset($portfolio) && isset($portfolio->id)) {
-            if ($request->hasFile('images')) {
+            // Handle uploaded images from cropper (priority)
+            if ($request->has('uploaded_images') && !empty($request->input('uploaded_images'))) {
+                $uploadedImages = json_decode($request->input('uploaded_images'), true);
+                $thumbIndex = $request->input('thumb');
+
+                if (is_array($uploadedImages)) {
+                    foreach ($uploadedImages as $index => $imageData) {
+                        $portfolio->images()->create([
+                            'image_path' => $imageData['image_path'],
+                            'featured' => $index == $thumbIndex,
+                            'sort_order' => $index,
+                        ]);
+                    }
+                }
+            }
+            // Handle traditional file uploads (fallback - only if no cropper images)
+            elseif ($request->hasFile('images')) {
                 $images = $request->file('images');
                 $thumbIndex = $request->input('thumb');
 
@@ -159,7 +178,24 @@ class PortfoliosController extends Controller
         $portfolio = $this->portfolioService->updatePortfolio($id, $result);
 
         if (isset($portfolio) && isset($portfolio->id)) {
-            if ($request->hasFile('images')) {
+            // Handle uploaded images from cropper (priority)
+            if ($request->has('uploaded_images') && !empty($request->input('uploaded_images'))) {
+                $uploadedImages = json_decode($request->input('uploaded_images'), true);
+                $thumbIndex = $request->input('thumb');
+                $maxOrder = $portfolio->images()->max('sort_order') ?? -1;
+
+                if (is_array($uploadedImages)) {
+                    foreach ($uploadedImages as $index => $imageData) {
+                        $portfolio->images()->create([
+                            'image_path' => $imageData['image_path'],
+                            'featured' => $index == $thumbIndex,
+                            'sort_order' => $maxOrder + $index + 1,
+                        ]);
+                    }
+                }
+            }
+            // Handle traditional file uploads (fallback - only if no cropper images)
+            elseif ($request->hasFile('images')) {
                 $images = $request->file('images');
                 $thumbIndex = $request->input('thumb');
 
@@ -218,5 +254,111 @@ class PortfoliosController extends Controller
         $this->portfolioService->reorderImages($portfolio_id, $imageOrders);
         
         return response()->json('Ordem das imagens atualizada com sucesso', 200);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'portfolio_id' => 'nullable|exists:portfolios,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Arquivo inválido. Apenas imagens JPG, PNG, GIF e WebP são permitidas (máx. 5MB).'
+            ], 422);
+        }
+
+        try {
+            $image = $request->file('image');
+            
+            \Log::info('Portfolio Upload Debug', [
+                'has_portfolio_id' => $request->has('portfolio_id'),
+                'portfolio_id_value' => $request->portfolio_id,
+                'image_name' => $image->getClientOriginalName(),
+                'image_size' => $image->getSize()
+            ]);
+            
+            // Definir tamanhos responsivos para portfólios
+            $responsiveSizes = [
+                ['width' => 800, 'height' => 600, 'suffix' => 'large'],
+                ['width' => 400, 'height' => 300, 'suffix' => 'medium'],
+                ['width' => 200, 'height' => 150, 'suffix' => 'small'],
+                ['width' => 141, 'height' => 141, 'suffix' => 'thumb']
+            ];
+            
+            // Converter para WebP com versões responsivas
+            $result = $this->imageOptimizationService->convertToWebP(
+                $image, 
+                'portfolios', 
+                'portfolio',
+                $responsiveSizes
+            );
+            
+            if (!$result['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $result['message']
+                ], 500);
+            }
+            
+            $imageData = $result['data'];
+            
+            // Create portfolio image record if portfolio_id is provided
+            $portfolioImage = null;
+            if ($request->has('portfolio_id') && $request->portfolio_id) {
+                \Log::info('Attempting to create portfolio image relationship', [
+                    'portfolio_id' => $request->portfolio_id
+                ]);
+                
+                $portfolio = Portfolio::find($request->portfolio_id);
+                if ($portfolio) {
+                    \Log::info('Portfolio found', ['portfolio_title' => $portfolio->title]);
+                    
+                    // Get the highest sort_order for this portfolio
+                    $maxOrder = $portfolio->images()->max('sort_order') ?? -1;
+                    
+                    $portfolioImage = $portfolio->images()->create([
+                        'image_path' => $imageData['original']['path'],
+                        'featured' => false, // Will be set manually later
+                        'sort_order' => $maxOrder + 1,
+                    ]);
+                    
+                    \Log::info('Portfolio image created', [
+                        'portfolio_image_id' => $portfolioImage->id,
+                        'image_path' => $portfolioImage->image_path,
+                        'sort_order' => $portfolioImage->sort_order
+                    ]);
+                } else {
+                    \Log::error('Portfolio not found', ['portfolio_id' => $request->portfolio_id]);
+                }
+            } else {
+                \Log::info('No portfolio_id provided or empty', [
+                    'has_portfolio_id' => $request->has('portfolio_id'),
+                    'portfolio_id_value' => $request->portfolio_id
+                ]);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'image_path' => $imageData['original']['path'],
+                'image_url' => $imageData['original']['url'],
+                'webp_url' => $imageData['original']['url'],
+                'fallback_url' => $imageData['fallback']['url'],
+                'responsive' => $imageData['responsive'] ?? [],
+                'portfolio_image_id' => $portfolioImage ? $portfolioImage->id : null,
+                'optimization_info' => [
+                    'original_size' => $imageData['original']['size'],
+                    'fallback_size' => $imageData['fallback']['size'],
+                    'savings' => $imageData['fallback']['size'] - $imageData['original']['size']
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao fazer upload da imagem: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

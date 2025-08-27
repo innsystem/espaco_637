@@ -69,6 +69,30 @@
     <div class="offcanvas-body" id="modal-content-portfolios">
     </div> <!-- end offcanvas-body-->
 </div> <!-- end offcanvas-->
+
+<!-- Image Cropper Modal for Portfolio -->
+<div class="modal fade" id="portfolioImageCropperModal" tabindex="-1" aria-labelledby="portfolioImageCropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="portfolioImageCropperModalLabel">Redimensionar Imagem do Portfólio</h5>
+                <div class="ms-auto">
+                    <span id="current-image-info" class="badge bg-info me-2"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body" style="min-height: 500px;">
+                <div class="img-container" style="height: 500px;">
+                    <img id="portfolioCropperImage" src="" alt="Crop Image" style="max-width: 100%; max-height: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="skipCropBtn">Pular Recorte</button>
+                <button type="button" class="btn btn-primary" id="cropAndSavePortfolio">Recortar e Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('pageCSS')
@@ -79,6 +103,9 @@
 
 <!-- Flatpickr Timepicker css -->
 <link href="{{ asset('/tpl_dashboard/vendor/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- Cropper.js CSS -->
+<link href="{{ asset('/plugins/croppperjs/cropper.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('pageJS')
@@ -92,6 +119,9 @@
 <!-- Flatpickr Timepicker Plugin js -->
 <script src="{{ asset('/tpl_dashboard/vendor/flatpickr/flatpickr.min.js') }}"></script>
 <script src="{{ asset('/tpl_dashboard/vendor/flatpickr/l10n/pt.js') }}"></script>
+
+<!-- Cropper.js JS -->
+<script src="{{ asset('/plugins/croppperjs/cropper.min.js') }}"></script>
 
 <script>
     $(document).ready(function() {
@@ -230,9 +260,8 @@
         offcanvas.show();
 
         var url = `{{ url('/admin/portfolios/create') }}`;
-        $.get(url,
-            $(this).addClass('modal-scrollfix'),
-            function(data) {
+        $(this).addClass('modal-scrollfix');
+        $.get(url, function(data) {
                 $("#modal-content-portfolios").html(data);
                 $(".button-portfolios-save").attr('data-type', 'store');
                 initMasks();
@@ -251,9 +280,8 @@
         offcanvas.show();
 
         var url = `{{ url('/admin/portfolios/${portfolio_id}/edit') }}`;
-        $.get(url,
-            $(this).addClass('modal-scrollfix'),
-            function(data) {
+        $(this).addClass('modal-scrollfix');
+        $.get(url, function(data) {
                 $("#modal-content-portfolios").html(data);
                 $(".button-portfolios-save").attr('data-type', 'edit').attr('data-portfolio-id', portfolio_id);
                 initMasks();
@@ -394,6 +422,340 @@
         })
     });
 
+    // Portfolio Image Cropping Variables
+    let portfolioCropper = null;
+    let portfolioImageQueue = [];
+    let currentPortfolioImageIndex = 0;
+    let processedPortfolioImages = [];
+
+    // Initialize portfolio image cropping functionality
+    function initializePortfolioImageCropping() {
+        $(document).on('change', '#images', function(e) {
+            const files = Array.from(e.target.files);
+            
+            if (files.length === 0) return;
+            
+            // Validate file sizes
+            for (let file of files) {
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        text: 'Uma ou mais imagens são muito grandes. Por favor, selecione imagens menores que 5MB.',
+                        icon: 'warning',
+                        showClass: {
+                            popup: 'animate__animated animate__wobble'
+                        }
+                    });
+                    $(this).val('');
+                    return;
+                }
+            }
+            
+            // Reset variables
+            portfolioImageQueue = [];
+            currentPortfolioImageIndex = 0;
+            processedPortfolioImages = [];
+            
+            // Process each file
+            files.forEach((file, index) => {
+                processPortfolioImageForCropper(file, index);
+            });
+        });
+
+        // Destroy cropper when modal is hidden
+        $('#portfolioImageCropperModal').on('hidden.bs.modal', function() {
+            destroyPortfolioCropper();
+        });
+    }
+
+    // Process individual image for cropper
+    function processPortfolioImageForCropper(file, index) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                // Resize large images before showing in cropper
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                let { width, height } = img;
+                const maxSize = 1200;
+                
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = (height * maxSize) / width;
+                        width = maxSize;
+                    } else {
+                        width = (width * maxSize) / height;
+                        height = maxSize;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                portfolioImageQueue.push({
+                    index: index,
+                    name: file.name,
+                    src: canvas.toDataURL(),
+                    originalFile: file
+                });
+                
+                // Start cropping process when all images are processed
+                if (portfolioImageQueue.length === document.getElementById('images').files.length) {
+                    startPortfolioCroppingProcess();
+                }
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Start the cropping process for all images
+    function startPortfolioCroppingProcess() {
+        if (portfolioImageQueue.length === 0) return;
+        
+        currentPortfolioImageIndex = 0;
+        showNextPortfolioImageForCropping();
+    }
+
+    // Show next image for cropping
+    function showNextPortfolioImageForCropping() {
+        if (currentPortfolioImageIndex >= portfolioImageQueue.length) {
+            // All images processed, show summary
+            showProcessedPortfolioImages();
+            return;
+        }
+        
+        const currentImage = portfolioImageQueue[currentPortfolioImageIndex];
+        $('#current-image-info').text(`Imagem ${currentPortfolioImageIndex + 1} de ${portfolioImageQueue.length}: ${currentImage.name}`);
+        
+        showPortfolioCropperModal(currentImage.src);
+    }
+
+    // Show cropper modal and initialize cropper
+    function showPortfolioCropperModal(imageSrc) {
+        destroyPortfolioCropper();
+        
+        $('#portfolioCropperImage').attr('src', imageSrc);
+        $('#portfolioImageCropperModal').modal('show');
+        
+        setTimeout(function() {
+            initializePortfolioCropper();
+        }, 300);
+    }
+
+    // Initialize cropper for portfolio images
+    function initializePortfolioCropper() {
+        const image = document.getElementById('portfolioCropperImage');
+        if (!image || !image.src) return;
+        
+        portfolioCropper = new Cropper(image, {
+            aspectRatio: 4/3, // Portfolio aspect ratio
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 1,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+            minContainerWidth: 200,
+            minContainerHeight: 200,
+            minCanvasWidth: 100,
+            minCanvasHeight: 100,
+            minCropBoxWidth: 50,
+            minCropBoxHeight: 50,
+            ready: function() {
+                const containerData = portfolioCropper.getContainerData();
+                const imageData = portfolioCropper.getImageData();
+                
+                // Set optimal crop area
+                const aspectRatio = 4/3;
+                let cropWidth, cropHeight;
+                
+                if (imageData.width / imageData.height > aspectRatio) {
+                    cropHeight = imageData.height;
+                    cropWidth = cropHeight * aspectRatio;
+                } else {
+                    cropWidth = imageData.width;
+                    cropHeight = cropWidth / aspectRatio;
+                }
+                
+                const left = (imageData.width - cropWidth) / 2;
+                const top = (imageData.height - cropHeight) / 2;
+                
+                portfolioCropper.setCropBoxData({
+                    left: left,
+                    top: top,
+                    width: cropWidth,
+                    height: cropHeight
+                });
+            }
+        });
+    }
+
+    // Destroy portfolio cropper
+    function destroyPortfolioCropper() {
+        if (portfolioCropper) {
+            portfolioCropper.destroy();
+            portfolioCropper = null;
+        }
+    }
+
+    // Handle crop and save for portfolio
+    $('#cropAndSavePortfolio').on('click', function() {
+        if (portfolioCropper) {
+            try {
+                const canvas = portfolioCropper.getCroppedCanvas({
+                    width: 800,
+                    height: 600,
+                    minWidth: 200,
+                    minHeight: 150,
+                    maxWidth: 1200,
+                    maxHeight: 900,
+                    fillColor: '#fff',
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                
+                if (!canvas || canvas.width === 0 || canvas.height === 0) {
+                    reinitializePortfolioCropper();
+                    return;
+                }
+                
+                canvas.toBlob(function(blob) {
+                    if (!blob || blob.size === 0) {
+                        reinitializePortfolioCropper();
+                        return;
+                    }
+                    uploadCroppedPortfolioImage(blob);
+                }, 'image/jpeg', 0.85);
+                
+            } catch (error) {
+                console.error('Erro no cropper do portfólio:', error);
+                reinitializePortfolioCropper();
+            }
+        }
+    });
+
+    // Skip cropping for current image
+    $('#skipCropBtn').on('click', function() {
+        const currentImage = portfolioImageQueue[currentPortfolioImageIndex];
+        
+        // Use original image without cropping
+        const formData = new FormData();
+        formData.append('image', currentImage.originalFile);
+        
+        uploadOriginalPortfolioImage(formData);
+    });
+
+    // Upload cropped portfolio image
+    function uploadCroppedPortfolioImage(blob) {
+        const formData = new FormData();
+        const currentImage = portfolioImageQueue[currentPortfolioImageIndex];
+        formData.append('image', blob, `cropped_${currentImage.name}`);
+        
+        uploadPortfolioImageToServer(formData);
+    }
+
+    // Upload original portfolio image (when skipping crop)
+    function uploadOriginalPortfolioImage(formData) {
+        uploadPortfolioImageToServer(formData);
+    }
+
+    // Upload image to server
+    function uploadPortfolioImageToServer(formData) {
+        // Try multiple ways to get portfolio_id
+        let portfolioId = null;
+        
+        // Method 1: From form data attribute
+        portfolioId = $('#form-request-portfolios').data('portfolio-id');
+        
+        // Method 2: From form attribute directly
+        if (!portfolioId) {
+            portfolioId = $('#form-request-portfolios').attr('data-portfolio-id');
+        }
+        
+        // Method 3: From URL if we're in edit mode
+        if (!portfolioId) {
+            const currentUrl = window.location.href;
+            const editMatch = currentUrl.match(/\/portfolios\/(\d+)\/edit/);
+            if (editMatch) {
+                portfolioId = editMatch[1];
+            }
+        }
+        
+        // Method 4: From any edit button that might be active
+        if (!portfolioId) {
+            const activeEditButton = $('.button-portfolios-edit.active, .button-portfolios-save[data-portfolio-id]');
+            if (activeEditButton.length > 0) {
+                portfolioId = activeEditButton.data('portfolio-id');
+            }
+        }
+        
+        console.log('Debug: portfolio_id final:', portfolioId);
+        
+        if (portfolioId && portfolioId !== '' && portfolioId !== 'undefined') {
+            formData.append('portfolio_id', portfolioId);
+            console.log('Debug: portfolio_id adicionado ao FormData:', portfolioId);
+        } else {
+            console.log('Debug: Nenhum portfolio_id válido encontrado - upload sem relação');
+        }
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        
+        $.ajax({
+            url: `{{ url('/admin/portfolios/upload-image') }}`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    const currentImage = portfolioImageQueue[currentPortfolioImageIndex];
+                    processedPortfolioImages.push({
+                        ...currentImage,
+                        uploadedData: response,
+                        image_path: response.image_path
+                    });
+                    
+                    // Update hidden field with processed images
+                    updateProcessedImagesField();
+                    
+                    $('#portfolioImageCropperModal').modal('hide');
+                    
+                    // Move to next image
+                    currentPortfolioImageIndex++;
+                    setTimeout(() => {
+                        showNextPortfolioImageForCropping();
+                    }, 500);
+                }
+            },
+            error: function(xhr) {
+                $('#portfolioImageCropperModal').modal('hide');
+                let errorMessage = 'Erro ao carregar imagem';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += ': ' + xhr.responseJSON.message;
+                }
+                
+                Swal.fire({
+                    text: errorMessage,
+                    icon: 'error',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
+                });
+            }
+        });
+    }
+
     // Delete Image
     $(document).on('click', '.button-portfolio-images-delete', function(e) {
         e.preventDefault();
@@ -467,12 +829,81 @@
                 loadContentPage();
             },
             error: function(xhr) {
+                $('#portfolioImageCropperModal').modal('hide');
+                let errorMessage = 'Erro ao carregar imagem';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += ': ' + xhr.responseJSON.message;
+                }
+                
                 Swal.fire({
-                    text: 'Erro ao atualizar imagem destacada.',
+                    text: errorMessage,
                     icon: 'error',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
                 });
             }
         });
+    });
+
+    // Reinitialize cropper on error
+    function reinitializePortfolioCropper() {
+        destroyPortfolioCropper();
+        setTimeout(function() {
+            initializePortfolioCropper();
+        }, 100);
+    }
+
+    // Update hidden field with processed images
+    function updateProcessedImagesField() {
+        const imageData = processedPortfolioImages.map(img => ({
+            image_path: img.image_path,
+            name: img.name
+        }));
+        
+        // Add or update hidden field in form
+        let hiddenField = $('#uploaded_images');
+        if (hiddenField.length === 0) {
+            $('#form-request-portfolios').append('<input type="hidden" id="uploaded_images" name="uploaded_images">');
+            hiddenField = $('#uploaded_images');
+        }
+        hiddenField.val(JSON.stringify(imageData));
+    }
+
+    // Show processed images summary
+    function showProcessedPortfolioImages() {
+        let summaryHtml = '<div class="alert alert-success"><h6>Imagens processadas com sucesso!</h6><ul>';
+        
+        processedPortfolioImages.forEach((img, index) => {
+            summaryHtml += `<li>${img.name} - Convertida para WebP</li>`;
+        });
+        
+        summaryHtml += '</ul></div>';
+        
+        $('#processed-images').html(summaryHtml);
+        
+        // Update hidden field with all processed images
+        updateProcessedImagesField();
+        
+        // Clear the file input to prevent duplicate processing
+        $('#images').val('').prop('files', null);
+        
+        // Remove the name attribute from images input to prevent form submission
+        $('#images').removeAttr('name');
+        
+        Swal.fire({
+            title: 'Sucesso!',
+            text: `${processedPortfolioImages.length} imagem(ns) processada(s) e convertida(s) para WebP. As imagens serão associadas ao portfólio quando você salvar.`,
+            icon: 'success',
+            showClass: {
+                popup: 'animate__animated animate__fadeInUp'
+            }
+        });
+    }
+
+    // Initialize when document is ready
+    $(document).ready(function() {
+        initializePortfolioImageCropping();
     });
 </script>
 @endsection
