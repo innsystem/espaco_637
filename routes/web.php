@@ -6,26 +6,21 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Site\AuthController;
 use App\Http\Controllers\Site\WebhookController;
+use App\Http\Controllers\Site\SitemapController;
 
 // Group Site
 Route::controller(SiteController::class)->group(function () {
     Route::get('/', 'index')->name('site.index');
-    Route::get('/site', 'site')->name('site.site');
-    Route::get('/grupos', 'grupos')->name('site.grupos');
 
-    Route::get('/pages/{slug}', 'pageShow')->name('site.pages.show');
     Route::get('/services/{slug}', 'serviceShow')->name('site.services.show');
     Route::get('/portfolios/{slug}', 'portfolioShow')->name('site.portfolios.show');
     
     // Categories and Products public routes
     Route::get('/categorias', 'categoriesIndex')->name('site.categories.index');
-    Route::get('/produtos/{slug}', 'productsByCategory')->name('site.products.category');
-    Route::get('/produto/{slug}', 'productDetail')->name('site.product.detail');
-    // Rotas removidas - conteúdo movido para home
-    // Route::get('/sobre', 'about')->name('site.about');
-    // Route::get('/servicos', 'services')->name('site.services');
-    // Route::get('/contato', 'contact')->name('site.contact');
 });
+
+// Sitemap route
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::get('/login', 'login')->name('login');
