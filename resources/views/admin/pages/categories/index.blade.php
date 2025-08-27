@@ -1,6 +1,6 @@
 @extends('admin.base')
 
-@section('title', 'Categorias')
+@section('title', 'Eventos')
 
 @section('content')
 <div class="container">

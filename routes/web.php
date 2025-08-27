@@ -16,7 +16,7 @@ Route::controller(SiteController::class)->group(function () {
     Route::get('/portfolios/{slug}', 'portfolioShow')->name('site.portfolios.show');
     
     // Categories and Products public routes
-    Route::get('/categorias', 'categoriesIndex')->name('site.categories.index');
+    Route::get('/eventos', 'categoriesIndex')->name('site.categories.index');
 });
 
 // Sitemap route
