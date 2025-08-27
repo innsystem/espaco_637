@@ -34,9 +34,9 @@
                                 <a class="dropdown-item button-statistics-edit" href="#" data-statistic-id="{{ $result->id }}">
                                     <i class="mdi mdi-pencil font-size-16 text-success me-1"></i> Editar
                                 </a>
-                                <a class="dropdown-item button-statistics-delete" href="#" data-statistic-id="{{ $result->id }}" data-statistic-title="{{ $result->title }}">
+                                <!-- <a class="dropdown-item button-statistics-delete" href="#" data-statistic-id="{{ $result->id }}" data-statistic-title="{{ $result->title }}">
                                     <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Excluir
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                     </td>

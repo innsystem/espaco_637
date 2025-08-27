@@ -48,7 +48,7 @@
     <link href="{{ asset('plugins/bootstrap-5.3.5/css/bootstrap.min.css') }}" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('tpl_site/css/espaco637.css?1'.rand()) }}">
+    <link rel="stylesheet" href="{{ asset('tpl_site/css/espaco637.css?2') }}">
     
     <!-- Animate.css -->
     <link rel="stylesheet" href="{{ asset('plugins/animate.min.css') }}">

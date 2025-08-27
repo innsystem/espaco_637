@@ -60,7 +60,7 @@
 @endsection
 
 @section('pageMODAL')
-<div class="offcanvas offcanvas-end" tabindex="-1" id="modalPortfolios" aria-labelledby="modalPortfoliosLabel" style="width:650px;">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="modalPortfolios" aria-labelledby="modalPortfoliosLabel" style="width:80%; max-width:950px;">
     <div class="offcanvas-header">
         <h5 id="modalPortfoliosLabel"></h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>

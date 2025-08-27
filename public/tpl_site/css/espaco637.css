@@ -12,7 +12,7 @@
 
     --gradient-hero: linear-gradient(135deg, var(--ranch-green), var(--ranch-green-light));
     --gradient-earth: linear-gradient(180deg, var(--ranch-cream), #f8f9fa);
-    --gradient-overlay: linear-gradient(45deg, rgba(101, 67, 33, 0.8), rgba(107, 142, 35, 0.6));
+    --gradient-overlay: linear-gradient(45deg, rgb(95 95 95 / 31%), rgb(217 217 217 / 36%));
     --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
 
     --shadow-ranch: 0 10px 40px -15px rgba(107, 142, 35, 0.3);
@@ -1520,6 +1520,13 @@ html {
     position: relative;
     overflow: hidden;
     height: 350px;
+}
+
+@media screen and (max-width:768px){
+    .product-image{
+        height: auto;
+        overflow: visible;
+    }
 }
 
 .product-img {

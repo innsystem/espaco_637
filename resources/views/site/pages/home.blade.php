@@ -109,9 +109,11 @@
 
         <div class="text-center mt-5">
             <p class="mb-3">Quer ver mais? Visite nosso espaço e descubra todas as possibilidades</p>
+            @if($statistics->where('id', 1)->first())
             <div class="success-badge">
-                <span>+200 eventos realizados com sucesso</span>
+                <span>{{ $statistics->where('id', 1)->first()->value }} {{ $statistics->where('id', 1)->first()->title }} com sucesso</span>
             </div>
+            @endif
 
             @if(isset($getSettings['cellphone']) && $getSettings['cellphone'] != '')
             <div class="mt-4">

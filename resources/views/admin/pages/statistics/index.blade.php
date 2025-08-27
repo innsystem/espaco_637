@@ -9,8 +9,8 @@
             <h4 class="fs-18 fw-semibold m-0">@yield('title')</h4>
         </div>
         <div>
-            <button type="button" class="btn btn-sm btn-success button-statistics-create"><i class="fa fa-plus"></i> Adicionar</button>
-            <button type="button" class="btn btn-sm btn-primary ms-2 button-statistics-toggle-filters"><i class="fas fa-filter"></i> Filtros</button>
+            <!-- <button type="button" class="btn btn-sm btn-success button-statistics-create"><i class="fa fa-plus"></i> Adicionar</button>
+            <button type="button" class="btn btn-sm btn-primary ms-2 button-statistics-toggle-filters"><i class="fas fa-filter"></i> Filtros</button> -->
         </div>
     </div>
     <div id="content_filters" class="row d-none">
