@@ -11,7 +11,7 @@
     </div>
     <div class="row mt-4 justify-content-center">
         <!-- Atalho para Sliders -->
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="h3 fw-bold card-title">Gerenciar Sliders</h5>
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Atalho para Categorias -->
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="h3 fw-bold card-title">Gerenciar Categorias</h5>
@@ -32,8 +32,20 @@
             </div>
         </div>
 
+        
+        <!-- Atalho para Portfolios -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="h3 fw-bold card-title">Gerenciar Portfolios</h5>
+                    <p class="card-text">Visualize e edite os portfólios do site.</p>
+                    <a href="{{ route('admin.portfolios.index') }}" class="btn btn-success">Ir para Portfolios</a>
+                </div>
+            </div>
+        </div>
+
         <!-- Atalho para Produtos -->
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="h3 fw-bold card-title">Gerenciar Produtos</h5>
