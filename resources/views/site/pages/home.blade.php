@@ -251,7 +251,7 @@
                                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/05.jpg') }}" alt="Área do Bar" class="about-image lazy-load">
                             </div>
                             <div class="about-image-wrapper mt-4">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/02.jpg') }}" alt="Área do Bar" class="about-image lazy-load">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/logo.png') }}" alt="Área do Bar" class="about-image lazy-load">
                             </div>
                         </div>
                     </div>
@@ -261,21 +261,17 @@
                 <div class="about-content">
                     <h2 class="section-title">Nossa História</h2>
 
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
-                            <p><strong>Cervejaria artesanal</strong> caseira evoluiu para estrutura profissional</p>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
-                            <p><strong>Rancho americano</strong> com cavalos, piquetes e atmosfera rústica</p>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
-                            <p><strong>Espaço 637</strong> nasceu para receber grandes celebrações</p>
-                        </div>
+                    <div class="about-story">
+                        <p>Tudo começou com a paixão pela cervejaria artesanal, que de um hobby caseiro foi convergindo para uma estrutura profissional e aplicada a qualidade e ao bem estar dos amigos e clientes.</p>
+                        
+                        <p>Em meio a 8 mil metros quadrados, nasceu um ambiente único, inspirado no estilo de rancho americano, com cavalos, piquetes e a atmosfera rústica do campo — mas sem abrir mão do conforto e da tecnologia moderna.</p>
+                        
+                        <p>Com o tempo, percebemos que esse espaço tinha potencial para muito mais do que apenas ser um ponto de encontro. Assim nasceu o <strong>Espaço 637</strong>, um local versátil e encantador, ideal para receber casamentos, aniversários, eventos corporativos e celebrações em geral.</p>
+                        
+                        <p>Aqui, unimos a autenticidade do campo com a estrutura necessária para grandes eventos, oferecendo um cenário inesquecível para os momentos mais especiais da sua vida.</p>
                     </div>
 
+                    <!--
                     <div class="philosophy-points mt-4">
                         @foreach($philosophyPoints as $point)
                         <div class="philosophy-item">
@@ -288,7 +284,7 @@
                             </div>
                         </div>
                         @endforeach
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -684,6 +680,34 @@
         }
         100% {
             background-position: -200% 0;
+        }
+    }
+
+    /* Estilos para a história da empresa */
+    .about-story {
+        line-height: 1.8;
+        color: #555;
+    }
+
+    .about-story p {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        text-align: justify;
+    }
+
+    .about-story p:last-child {
+        margin-bottom: 0;
+    }
+
+    .about-story strong {
+        color: var(--ranch-green);
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .about-story p {
+            font-size: 1rem;
+            text-align: left;
         }
     }
 </style>
