@@ -95,21 +95,6 @@
                 @endif
                 @endforeach
             </div>
-
-            <!-- Botões para cada portfólio da categoria -->
-            <div class="text-center mt-4">
-                <div class="row">
-                    @foreach($portfolios as $portfolio)
-                    @if($portfolio->images && $portfolio->images->count() > 0)
-                    <div class="col-md-4 mb-2">
-                        <a href="{{ route('site.portfolios.show', ['slug' => $portfolio->slug]) }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-eye"></i> {{ $portfolio->title }}
-                        </a>
-                    </div>
-                    @endif
-                    @endforeach
-                </div>
-            </div>
         </div>
         @endif
         @endforeach
