@@ -19,7 +19,7 @@
                 @endif
                 <div class="hero-slide-buttons">
                     <a href="#about" class="btn btn-primary btn-lg me-3">Conheça Nossa História</a>
-                    <a href="#events" class="btn btn-outline-light btn-lg">Ver Galeria</a>
+                    <a href="{{ route('site.categories.index')}}" class="btn btn-outline-light btn-lg">Ver Galeria</a>
                 </div>
             </div>
         </div>
@@ -131,27 +131,31 @@
 <!-- Services Section -->
 <section id="services" class="services-section">
     <div class="container">
-        <!-- <div class="row mb-5">
+        <div class="row mb-5">
             <div class="col-md-6">
                 <div class="service-header-image">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image lazy-load">
-                    <div class="service-image-overlay">
-                        <h2 class="service-image-title">O que Oferecemos</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="service-header-image">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/04.jpg') }}" alt="Pavilhão à Noite" class="service-image lazy-load">
-                    <div class="service-image-overlay">
-                        <div class="service-image-content">
-                            <div class="service-image-subtitle">Estrutura</div>
-                            <div class="service-image-text">Completa</div>
+                    <a href="{{ route('site.categories.index') }}" class="service-image-link">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image lazy-load">
+                        <div class="service-image-overlay">
+                            <h2 class="service-image-title">O que Oferecemos</h2>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
-        </div> -->
+            <div class="col-md-6">
+                <div class="service-header-image">
+                    <a href="{{ route('site.categories.index') }}" class="service-image-link">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/04.jpg') }}" alt="Pavilhão à Noite" class="service-image lazy-load">
+                        <div class="service-image-overlay">
+                            <div class="service-image-content">
+                                <div class="service-image-subtitle">Estrutura</div>
+                                <div class="service-image-text">Completa</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <div class="row g-4">
             @foreach($serviceFeatures as $feature)
@@ -207,9 +211,11 @@
         </div>
 
         <div class="text-center mt-5">
-            <a href="{{ route('site.categories.index') }}" class="btn btn-theme btn-lg">
+            @if(isset($getSettings['cellphone']) && $getSettings['cellphone'] != '')
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $getSettings['cellphone']) }}" class="btn btn-theme btn-lg">
                 <i class="fas fa-beer"></i> Ver Todas as Cervejas
             </a>
+            @endif
         </div>
     </div>
 </section>
@@ -263,11 +269,11 @@
 
                     <div class="about-story">
                         <p>Tudo começou com a paixão pela cervejaria artesanal, que de um hobby caseiro foi convergindo para uma estrutura profissional e aplicada a qualidade e ao bem estar dos amigos e clientes.</p>
-                        
+
                         <p>Em meio a 8 mil metros quadrados, nasceu um ambiente único, inspirado no estilo de rancho americano, com cavalos, piquetes e a atmosfera rústica do campo — mas sem abrir mão do conforto e da tecnologia moderna.</p>
-                        
+
                         <p>Com o tempo, percebemos que esse espaço tinha potencial para muito mais do que apenas ser um ponto de encontro. Assim nasceu o <strong>Espaço 637</strong>, um local versátil e encantador, ideal para receber casamentos, aniversários, eventos corporativos e celebrações em geral.</p>
-                        
+
                         <p>Aqui, unimos a autenticidade do campo com a estrutura necessária para grandes eventos, oferecendo um cenário inesquecível para os momentos mais especiais da sua vida.</p>
                     </div>
 
@@ -515,13 +521,13 @@
                 if (entry.isIntersecting) {
                     const img = entry.target;
                     img.src = img.getAttribute('data-src'); // Define o src com o valor de data-src
-                    
+
                     // Adiciona evento para quando a imagem carregar
                     img.onload = function() {
                         img.classList.remove('lazy-load');
                         img.classList.add('loaded');
                     };
-                    
+
                     observerImages.unobserve(img); // Para de observar a imagem
                 }
             });
@@ -678,6 +684,7 @@
         0% {
             background-position: 200% 0;
         }
+
         100% {
             background-position: -200% 0;
         }
