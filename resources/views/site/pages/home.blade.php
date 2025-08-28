@@ -73,9 +73,9 @@
         @endphp
 
         <div class="event-category mb-5">
-            <div class="text-center mb-4">
+            <!-- <div class="text-center mb-4">
                 <h3 class="event-category-title">{{ $categoryName }}</h3>
-            </div>
+            </div> -->
             @foreach($portfolios as $portfolio)
             @if($portfolio->images && $portfolio->images->count() > 0)
             <div class="portfolio-preview mb-4">
@@ -131,7 +131,7 @@
 <!-- Services Section -->
 <section id="services" class="services-section">
     <div class="container">
-        <div class="row mb-5">
+        <!-- <div class="row mb-5">
             <div class="col-md-6">
                 <div class="service-header-image">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" data-src="{{ asset('galerias/espaco637/08.jpg') }}" alt="Detalhes da Mesa" class="service-image lazy-load">
@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="row g-4">
             @foreach($serviceFeatures as $feature)
